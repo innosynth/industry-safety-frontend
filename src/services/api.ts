@@ -1,7 +1,8 @@
 
 import { toast } from "sonner";
 
-const API_BASE_URL = "http://localhost:8000"; // Update with your actual API URL
+// API base URL can be configured at runtime
+const getApiBaseUrl = () => process.env.API_BASE_URL || "http://localhost:8000";
 
 // Interface for API responses
 export interface ApiResponse<T> {
@@ -39,7 +40,7 @@ async function fetchApi<T = any>(
       }
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
+    const response = await fetch(`${getApiBaseUrl()}${endpoint}`, options);
     const data = await response.json();
 
     if (!response.ok) {
@@ -58,16 +59,17 @@ async function fetchApi<T = any>(
 // Video API
 export const videosApi = {
   uploadVideo: (formData: FormData) => fetchApi<{ id: string }>("/videos", "POST", formData),
-  listVideos: () => fetchApi<any[]>("/videos", "GET"),
+  listVideos: (tenantId: string) => fetchApi<any[]>(`/videos?tenant_id=${tenantId}`, "GET"),
   getVideo: (id: string) => fetchApi<any>(`/videos/${id}`, "GET"),
-  deleteVideo: (id: string) => fetchApi<void>(`/videos/${id}`, "DELETE"),
+  deleteVideo: (id: string, tenantId: string) => 
+    fetchApi<void>(`/videos/${id}?tenant_id=${tenantId}`, "DELETE"),
   updateVideo: (id: string, data: any) => fetchApi<any>(`/videos/${id}`, "PUT", data),
 };
 
 // Status API
 export const statusApi = {
-  getStatus: () => fetchApi<any>("/status", "GET"),
-  getStats: () => fetchApi<any>("/stats", "GET"),
+  getStatus: (tenantId: string) => fetchApi<any>(`/status?tenant_id=${tenantId}`, "GET"),
+  getStats: (tenantId: string) => fetchApi<any>(`/stats?tenant_id=${tenantId}`, "GET"),
   getDbStatus: () => fetchApi<any>("/db-status", "GET"),
 };
 
@@ -87,11 +89,11 @@ export const tenantApi = {
 
 // Face API
 export const faceApi = {
-  addFace: (tenantId: string, faceData: any) => 
+  addFace: (tenantId: string, faceData: FormData) => 
     fetchApi<any>(`/tenants/${tenantId}/faces`, "POST", faceData),
   listFaces: (tenantId: string) => 
     fetchApi<any[]>(`/tenants/${tenantId}/faces`, "GET"),
-  updateFace: (tenantId: string, faceId: string, faceData: any) => 
+  updateFace: (tenantId: string, faceId: string, faceData: FormData) => 
     fetchApi<any>(`/tenants/${tenantId}/faces/${faceId}`, "PUT", faceData),
   removeFace: (tenantId: string, faceId: string) => 
     fetchApi<void>(`/tenants/${tenantId}/faces/${faceId}`, "DELETE"),
@@ -99,7 +101,7 @@ export const faceApi = {
 
 // Camera API
 export const cameraApi = {
-  updateLiveUrl: (tenantId: string, cameraId: string, urlData: any) => 
+  updateLiveUrl: (tenantId: string, cameraId: string, urlData: string) => 
     fetchApi<any>(`/tenants/${tenantId}/cameras/${cameraId}/live-url`, "PUT", urlData),
 };
 
@@ -113,6 +115,13 @@ export const eventApi = {
 export const processApi = {
   processVideo: (tenantId: string, videoData: any) => 
     fetchApi<any>(`/process/${tenantId}`, "POST", videoData),
+};
+
+// Export a function to set API base URL, useful for configuration components
+export const setApiBaseUrl = (url: string) => {
+  window.localStorage.setItem('apiBaseUrl', url);
+  // Reload to apply new API URL
+  window.location.reload();
 };
 
 // Mock data for initial development

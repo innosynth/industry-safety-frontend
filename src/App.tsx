@@ -12,8 +12,30 @@ import Stats from "./pages/Stats";
 import Tenants from "./pages/Tenants";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import { useEffect } from "react";
 
-const queryClient = new QueryClient();
+// Initialize API base URL from localStorage or default
+if (typeof window !== 'undefined') {
+  // This check is for SSR compatibility
+  const storedApiUrl = localStorage.getItem('apiBaseUrl');
+  if (storedApiUrl) {
+    // @ts-ignore - Add to window for global access
+    window.process = window.process || {};
+    // @ts-ignore
+    window.process.env = window.process.env || {};
+    // @ts-ignore
+    window.process.env.API_BASE_URL = storedApiUrl;
+  }
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
