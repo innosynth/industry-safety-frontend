@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,6 +54,10 @@ const Settings: React.FC = () => {
   const [dbConfigOpen, setDbConfigOpen] = useState(false);
   const [processingResourcesOpen, setProcessingResourcesOpen] = useState(false);
   const [networkSettingsOpen, setNetworkSettingsOpen] = useState(false);
+
+  // State for Processing Resources values
+  const [cpuUtilization, setCpuUtilization] = useState(75);
+  const [memoryAllocation, setMemoryAllocation] = useState(60);
 
   const handleSaveGeneralSettings = () => {
     toast.success("Settings saved successfully");
@@ -569,12 +572,13 @@ const Settings: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Slider
                   id="max-cpu"
-                  defaultValue={[75]}
+                  value={[cpuUtilization]}
+                  onValueChange={(value) => setCpuUtilization(value[0])}
                   max={100}
                   step={5}
                   className="flex-1"
                 />
-                <span className="w-12 text-right">75%</span>
+                <span className="w-12 text-right">{cpuUtilization}%</span>
               </div>
             </div>
             
@@ -583,12 +587,13 @@ const Settings: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <Slider
                   id="max-memory"
-                  defaultValue={[60]}
+                  value={[memoryAllocation]}
+                  onValueChange={(value) => setMemoryAllocation(value[0])}
                   max={100}
                   step={5}
                   className="flex-1"
                 />
-                <span className="w-12 text-right">60%</span>
+                <span className="w-12 text-right">{memoryAllocation}%</span>
               </div>
             </div>
             

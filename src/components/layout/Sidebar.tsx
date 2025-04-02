@@ -5,8 +5,7 @@ import {
   Camera, 
   LayoutDashboard, 
   Shield, 
-  AlertTriangle, 
-  Settings, 
+  AlertTriangle,
   Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,13 +18,13 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
+// Updated navigation items without Settings
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Video Monitoring", href: "/videos", icon: Camera },
   { name: "Safety Violations", href: "/violations", icon: AlertTriangle },
   { name: "Safety Stats", href: "/stats", icon: Shield },
   { name: "Tenants", href: "/tenants", icon: Users },
-  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 const NavItem = ({ item, mobile = false, onNavigate }: { 

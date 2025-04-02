@@ -6,20 +6,18 @@ import {
   LayoutDashboard, 
   Shield, 
   AlertTriangle, 
-  Settings, 
   Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Same navigation items as in Sidebar
+// Updated navigation items without Settings
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Video Monitoring", href: "/videos", icon: Camera },
   { name: "Safety Violations", href: "/violations", icon: AlertTriangle },
   { name: "Safety Stats", href: "/stats", icon: Shield },
   { name: "Tenants", href: "/tenants", icon: Users },
-  { name: "Settings", href: "/settings", icon: Settings },
 ];
 
 const MobileFooter: React.FC = () => {
@@ -33,7 +31,7 @@ const MobileFooter: React.FC = () => {
   
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50 md:hidden">
-      <div className="grid grid-cols-6 h-16">
+      <div className="grid grid-cols-5 h-16">
         {navigation.map((item) => {
           const isActive = location.pathname === item.href || 
                           (item.href !== "/" && location.pathname.startsWith(item.href));

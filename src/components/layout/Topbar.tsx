@@ -4,7 +4,8 @@ import {
   BellIcon, 
   User,
   MoonIcon,
-  SunIcon 
+  SunIcon,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,9 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Topbar: React.FC = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  
   const [theme, setTheme] = React.useState<"light" | "dark">(
     localStorage.getItem("theme") as "light" | "dark" || "light"
   );
@@ -71,8 +77,13 @@ const Topbar: React.FC = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/profile")}>Profile</DropdownMenuItem>
+            {isMobile && (
+              <DropdownMenuItem onClick={() => navigate("/settings")}>
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

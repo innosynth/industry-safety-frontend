@@ -11,8 +11,8 @@ import Violations from "./pages/Violations";
 import Stats from "./pages/Stats";
 import Tenants from "./pages/Tenants";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
-import { useEffect } from "react";
 
 // Initialize API base URL from localStorage or default
 if (typeof window !== 'undefined') {
@@ -51,6 +51,7 @@ const App = () => (
             <Route path="/stats" element={<Stats />} />
             <Route path="/tenants" element={<Tenants />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
