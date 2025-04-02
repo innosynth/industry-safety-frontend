@@ -15,7 +15,7 @@ import { Camera } from "lucide-react";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { api } from "@/services/api";
+import { tenantApi, cameraApi, videosApi } from "@/services/api";
 
 const LiveCameraDialog: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +43,7 @@ const LiveCameraDialog: React.FC = () => {
   const fetchTenants = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/tenants");
+      const response = await tenantApi.listTenants();
       if (response.success && response.data) {
         // Assuming the API returns an array of tenant objects with id and name
         setTenants(response.data);
@@ -61,7 +61,7 @@ const LiveCameraDialog: React.FC = () => {
   const fetchCameras = async (tenantId: string) => {
     setLoading(true);
     try {
-      const response = await api.get(`/videos?tenant_id=${tenantId}`);
+      const response = await videosApi.listVideos(tenantId);
       if (response.success && response.data) {
         // Assuming the API returns camera data
         const cameraData = response.data.map((item: any) => ({
@@ -88,10 +88,10 @@ const LiveCameraDialog: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await api.put(
-        `/tenants/${selectedTenant}/cameras/${selectedCamera}/live-url`,
-        cameraUrl,
-        { headers: { 'Content-Type': 'application/json' } }
+      const response = await cameraApi.updateLiveUrl(
+        selectedTenant,
+        selectedCamera,
+        cameraUrl
       );
       
       if (response.success) {
