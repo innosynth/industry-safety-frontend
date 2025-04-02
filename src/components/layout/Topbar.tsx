@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { 
   BellIcon, 
   User,
@@ -17,12 +17,20 @@ import { useToast } from "@/components/ui/use-toast";
 
 const Topbar: React.FC = () => {
   const { toast } = useToast();
-  const [theme, setTheme] = React.useState<"light" | "dark">("light");
+  const [theme, setTheme] = React.useState<"light" | "dark">(
+    localStorage.getItem("theme") as "light" | "dark" || "light"
+  );
+
+  useEffect(() => {
+    // Apply the theme on first load
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  }, []);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark", newTheme === "dark");
+    localStorage.setItem("theme", newTheme);
   };
 
   return (

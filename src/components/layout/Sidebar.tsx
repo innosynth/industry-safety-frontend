@@ -1,6 +1,6 @@
 
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { 
   Camera, 
   LayoutDashboard, 
@@ -28,50 +28,89 @@ const navigation = [
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
-const NavItem = ({ item, mobile = false }: { item: typeof navigation[0]; mobile?: boolean }) => {
-  const SheetCloseWrapper = mobile ? SheetClose : React.Fragment;
+const NavItem = ({ item, mobile = false, onNavigate }: { 
+  item: typeof navigation[0]; 
+  mobile?: boolean;
+  onNavigate?: () => void;
+}) => {
+  const navigate = useNavigate();
   
+  const handleClick = (e: React.MouseEvent) => {
+    if (onNavigate) {
+      e.preventDefault();
+      onNavigate();
+      navigate(item.href);
+    }
+  };
+  
+  if (mobile) {
+    return (
+      <SheetClose asChild>
+        <NavLink
+          to={item.href}
+          className={({ isActive }) =>
+            cn(
+              "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+              isActive
+                ? "bg-primary text-primary-foreground"
+                : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            )
+          }
+        >
+          <item.icon className="h-5 w-5" />
+          <span>{item.name}</span>
+        </NavLink>
+      </SheetClose>
+    );
+  }
+
   return (
-    <SheetCloseWrapper>
-      <NavLink
-        to={item.href}
-        className={({ isActive }) =>
-          cn(
-            "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
-            isActive
-              ? "bg-primary text-primary-foreground"
-              : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          )
-        }
-      >
-        <item.icon className="h-5 w-5" />
-        <span>{item.name}</span>
-      </NavLink>
-    </SheetCloseWrapper>
+    <NavLink
+      to={item.href}
+      className={({ isActive }) =>
+        cn(
+          "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+          isActive
+            ? "bg-primary text-primary-foreground"
+            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        )
+      }
+      onClick={handleClick}
+    >
+      <item.icon className="h-5 w-5" />
+      <span>{item.name}</span>
+    </NavLink>
   );
 };
 
 const Sidebar: React.FC = () => {
   const isMobile = useIsMobile();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = () => {
+    if (isMobile) {
+      setOpen(false);
+    }
+  };
 
   if (isMobile) {
     return (
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="absolute top-4 left-4 z-50">
             <LayoutDashboard className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 bg-sidebar pt-10">
+        <SheetContent side="left" className="w-64 bg-sidebar dark:bg-sidebar pt-10">
           <div className="mb-8 px-3">
             <div className="flex items-center">
               <Shield className="h-6 w-6 text-safety-blue mr-2" />
-              <h1 className="text-lg font-bold">Safety Vision</h1>
+              <h1 className="text-lg font-bold text-sidebar-foreground">Safety Vision</h1>
             </div>
           </div>
           <nav className="space-y-1 px-2">
             {navigation.map((item) => (
-              <NavItem key={item.name} item={item} mobile={true} />
+              <NavItem key={item.name} item={item} mobile={true} onNavigate={handleClose} />
             ))}
           </nav>
         </SheetContent>
@@ -80,11 +119,11 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <div className="w-64 border-r bg-sidebar hidden md:flex md:flex-col">
+    <div className="w-64 border-r bg-sidebar dark:bg-sidebar hidden md:flex md:flex-col">
       <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4 mb-5">
           <Shield className="h-6 w-6 text-safety-blue mr-2" />
-          <h1 className="text-lg font-bold">Safety Vision</h1>
+          <h1 className="text-lg font-bold text-sidebar-foreground">Safety Vision</h1>
         </div>
         <nav className="mt-2 flex-1 px-2 space-y-1">
           {navigation.map((item) => (

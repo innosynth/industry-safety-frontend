@@ -1,15 +1,21 @@
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Shield, AlertTriangle, CheckCircle, ArrowUpRight } from "lucide-react";
+import { Shield, AlertTriangle, CheckCircle, ArrowUpRight, VideoIcon } from "lucide-react";
 import { mockData } from "@/services/api";
+import { Button } from "@/components/ui/button";
 
 const Dashboard: React.FC = () => {
   const [stats, setStats] = React.useState(mockData.stats);
+  const [liveCameraUrl, setLiveCameraUrl] = useState<string | null>(null);
+  const [liveCameraInfo, setLiveCameraInfo] = useState<{
+    tenantId: string;
+    cameraId: string;
+  } | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // In a real app, you'd fetch this data from your API
     // const fetchStats = async () => {
     //   const response = await statusApi.getStats();
@@ -21,6 +27,19 @@ const Dashboard: React.FC = () => {
     
     // Using mock data for now
     setStats(mockData.stats);
+    
+    // Get live camera URL from localStorage
+    const cameraUrl = localStorage.getItem('liveCameraUrl');
+    const tenantId = localStorage.getItem('liveCameraTenant');
+    const cameraId = localStorage.getItem('liveCameraId');
+    
+    if (cameraUrl && tenantId && cameraId) {
+      setLiveCameraUrl(cameraUrl);
+      setLiveCameraInfo({
+        tenantId,
+        cameraId
+      });
+    }
   }, []);
 
   // Format detection data for pie chart
@@ -40,6 +59,31 @@ const Dashboard: React.FC = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Safety Monitoring Dashboard</h1>
       </div>
+
+      {/* Live Camera Feed */}
+      {liveCameraUrl && (
+        <Card className="overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardTitle className="flex items-center gap-2">
+              <VideoIcon className="h-5 w-5 text-safety-red" /> 
+              Live Camera Feed
+              {liveCameraInfo && (
+                <span className="text-sm font-normal text-muted-foreground ml-2">
+                  (Camera {liveCameraInfo.cameraId})
+                </span>
+              )}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 aspect-video">
+            <iframe 
+              src={liveCameraUrl} 
+              className="w-full h-full border-0" 
+              allowFullScreen
+              title="Live Camera Feed"
+            />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
