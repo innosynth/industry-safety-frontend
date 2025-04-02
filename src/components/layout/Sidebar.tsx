@@ -1,6 +1,6 @@
 
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { 
   Camera, 
   LayoutDashboard, 
@@ -34,6 +34,9 @@ const NavItem = ({ item, mobile = false, onNavigate }: {
   onNavigate?: () => void;
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isActive = location.pathname === item.href || 
+                   (item.href !== "/" && location.pathname.startsWith(item.href));
   
   const handleClick = (e: React.MouseEvent) => {
     if (onNavigate) {
@@ -101,10 +104,10 @@ const Sidebar: React.FC = () => {
             <LayoutDashboard className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 bg-sidebar dark:bg-sidebar pt-10">
+        <SheetContent side="left" className="w-64 bg-sidebar pt-10 dark:bg-sidebar border-r border-border">
           <div className="mb-8 px-3">
             <div className="flex items-center">
-              <Shield className="h-6 w-6 text-safety-blue mr-2" />
+              <Shield className="h-6 w-6 text-primary mr-2" />
               <h1 className="text-lg font-bold text-sidebar-foreground">Safety Vision</h1>
             </div>
           </div>
@@ -119,10 +122,10 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <div className="w-64 border-r bg-sidebar dark:bg-sidebar hidden md:flex md:flex-col">
+    <div className="w-64 border-r border-border bg-sidebar dark:bg-sidebar hidden md:flex md:flex-col">
       <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4 mb-5">
-          <Shield className="h-6 w-6 text-safety-blue mr-2" />
+          <Shield className="h-6 w-6 text-primary mr-2" />
           <h1 className="text-lg font-bold text-sidebar-foreground">Safety Vision</h1>
         </div>
         <nav className="mt-2 flex-1 px-2 space-y-1">

@@ -30,6 +30,15 @@ import {
   Network
 } from "lucide-react";
 import { toast } from "sonner";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
 
 const Settings: React.FC = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -40,7 +49,13 @@ const Settings: React.FC = () => {
   const [apiKey, setApiKey] = useState("sk_test_4eC39HqLyjWDarjtT1zdp7dc");
   const [apiEndpoint, setApiEndpoint] = useState("https://api.safetyvision.example.com");
   const [modelVersion, setModelVersion] = useState("v2");
+  const [confidenceThreshold, setConfidenceThreshold] = useState([80]);
   
+  // Dialog states
+  const [dbConfigOpen, setDbConfigOpen] = useState(false);
+  const [processingResourcesOpen, setProcessingResourcesOpen] = useState(false);
+  const [networkSettingsOpen, setNetworkSettingsOpen] = useState(false);
+
   const handleSaveGeneralSettings = () => {
     toast.success("Settings saved successfully");
   };
@@ -84,7 +99,7 @@ const Settings: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="detection-sensitivity">Detection Sensitivity</Label>
-                    <span className="text-sm">{detectionSensitivity}%</span>
+                    <span className="text-sm">{detectionSensitivity[0]}%</span>
                   </div>
                   <Slider
                     id="detection-sensitivity"
@@ -333,11 +348,12 @@ const Settings: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="min-confidence">Minimum Confidence Threshold</Label>
-                    <span className="text-sm">80%</span>
+                    <span className="text-sm">{confidenceThreshold[0]}%</span>
                   </div>
                   <Slider
                     id="min-confidence"
-                    defaultValue={[80]}
+                    value={confidenceThreshold}
+                    onValueChange={setConfidenceThreshold}
                     max={100}
                     step={5}
                   />
@@ -434,7 +450,7 @@ const Settings: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => setDbConfigOpen(true)}>
                     Configure
                   </Button>
                 </div>
@@ -449,7 +465,7 @@ const Settings: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => setProcessingResourcesOpen(true)}>
                     Configure
                   </Button>
                 </div>
@@ -464,7 +480,7 @@ const Settings: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => setNetworkSettingsOpen(true)}>
                     Configure
                   </Button>
                 </div>
@@ -480,6 +496,200 @@ const Settings: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Database Configuration Dialog */}
+      <Dialog open={dbConfigOpen} onOpenChange={setDbConfigOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Database Configuration</DialogTitle>
+            <DialogDescription>
+              Configure database connection settings and parameters.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="db-host">Database Host</Label>
+              <Input id="db-host" placeholder="localhost" defaultValue="db.example.com" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="db-port">Port</Label>
+              <Input id="db-port" placeholder="5432" defaultValue="5432" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="db-name">Database Name</Label>
+              <Input id="db-name" placeholder="postgres" defaultValue="safety_vision_db" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="db-user">Username</Label>
+              <Input id="db-user" placeholder="postgres" defaultValue="safety_admin" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="db-password">Password</Label>
+              <Input id="db-password" type="password" placeholder="••••••••" />
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch id="db-ssl" defaultChecked />
+              <Label htmlFor="db-ssl">Enable SSL Connection</Label>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={() => {
+              setDbConfigOpen(false);
+              toast.success("Database settings saved");
+            }}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Processing Resources Dialog */}
+      <Dialog open={processingResourcesOpen} onOpenChange={setProcessingResourcesOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Processing Resources</DialogTitle>
+            <DialogDescription>
+              Configure CPU/GPU allocation for video processing and analysis.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="max-cpu">CPU Utilization Limit</Label>
+              <div className="flex items-center space-x-2">
+                <Slider
+                  id="max-cpu"
+                  defaultValue={[75]}
+                  max={100}
+                  step={5}
+                  className="flex-1"
+                />
+                <span className="w-12 text-right">75%</span>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="max-memory">Memory Allocation</Label>
+              <div className="flex items-center space-x-2">
+                <Slider
+                  id="max-memory"
+                  defaultValue={[60]}
+                  max={100}
+                  step={5}
+                  className="flex-1"
+                />
+                <span className="w-12 text-right">60%</span>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="gpu-enabled">GPU Acceleration</Label>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Enable GPU acceleration for processing</span>
+                <Switch id="gpu-enabled" defaultChecked />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="gpu-model">GPU Model</Label>
+              <Select defaultValue="nvidia-t4">
+                <SelectTrigger id="gpu-model">
+                  <SelectValue placeholder="Select GPU model" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="nvidia-t4">NVIDIA T4</SelectItem>
+                  <SelectItem value="nvidia-v100">NVIDIA V100</SelectItem>
+                  <SelectItem value="nvidia-a100">NVIDIA A100</SelectItem>
+                  <SelectItem value="amd-mi25">AMD Instinct MI25</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="max-concurrent">Maximum Concurrent Processes</Label>
+              <Input id="max-concurrent" type="number" min="1" max="32" defaultValue="8" />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={() => {
+              setProcessingResourcesOpen(false);
+              toast.success("Processing resources configured");
+            }}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Network Settings Dialog */}
+      <Dialog open={networkSettingsOpen} onOpenChange={setNetworkSettingsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Network Settings</DialogTitle>
+            <DialogDescription>
+              Configure network and bandwidth settings for optimal performance.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="bandwidth-limit">Bandwidth Limit (Mbps)</Label>
+              <Input id="bandwidth-limit" type="number" min="1" defaultValue="100" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="connection-timeout">Connection Timeout (seconds)</Label>
+              <Input id="connection-timeout" type="number" min="1" defaultValue="30" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="retry-attempts">Retry Attempts</Label>
+              <Input id="retry-attempts" type="number" min="0" defaultValue="3" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="retry-delay">Retry Delay (seconds)</Label>
+              <Input id="retry-delay" type="number" min="1" defaultValue="5" />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="proxy-config">Proxy Configuration</Label>
+              <Input id="proxy-config" placeholder="http://proxy.example.com:8080" />
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Switch id="use-compression" defaultChecked />
+              <Label htmlFor="use-compression">Enable Data Compression</Label>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={() => {
+              setNetworkSettingsOpen(false);
+              toast.success("Network settings saved");
+            }}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
