@@ -1,478 +1,950 @@
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { useNavigate } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 import { 
-  Search, 
-  ArrowLeft, 
-  ArrowRight, 
   BookOpen, 
-  Code, 
-  HelpCircle, 
   FileText, 
-  UserCircle, 
-  Settings2, 
-  Video, 
+  Code, 
+  Database, 
+  Shield, 
+  Camera, 
   AlertTriangle, 
-  CircleCheck 
+  ChartBar,
+  Users,
+  Settings,
+  ArrowRight,
+  ArrowLeft
 } from "lucide-react";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { useLoading } from "@/components/shared/LoadingProvider";
-import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
+
+interface DocCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick: () => void;
+}
+
+const DocCard: React.FC<DocCardProps> = ({ icon, title, description, onClick }) => {
+  return (
+    <div 
+      className="flex flex-col space-y-2 p-4 border rounded-lg bg-card hover:bg-accent/50 transition-colors hover:border-accent cursor-pointer"
+      onClick={onClick}
+    >
+      <div className="flex items-center space-x-2">
+        <div className="text-primary">{icon}</div>
+        <h3 className="font-medium">{title}</h3>
+      </div>
+      <p className="text-sm text-muted-foreground">{description}</p>
+      <div className="flex items-center text-sm text-primary mt-auto pt-2">
+        <span>Read more</span>
+        <ArrowRight className="h-4 w-4 ml-1" />
+      </div>
+    </div>
+  );
+};
 
 const Documentation: React.FC = () => {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeDoc, setActiveDoc] = useState<string | null>(null);
-  const [isContentLoading, setIsContentLoading] = useState(false);
-  const { isLoading, setLoading } = useLoading();
+  const [showDocDialog, setShowDocDialog] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState<{
+    title: string;
+    content: React.ReactNode;
+  } | null>(null);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+  const handleDocCardClick = (title: string, content: React.ReactNode) => {
+    setSelectedDoc({ title, content });
+    setShowDocDialog(true);
   };
 
-  const handleViewDocumentation = (docId: string) => {
-    setIsContentLoading(true);
-    // Simulate loading time
-    setTimeout(() => {
-      setActiveDoc(docId);
-      setIsContentLoading(false);
-    }, 500);
-  };
+  const platformOverviewContent = (
+    <div className="space-y-4">
+      <p>
+        The InnoSynth platform is a comprehensive safety monitoring solution designed for industrial environments. 
+        It combines advanced AI technology with intuitive management tools to help you ensure workplace safety 
+        compliance.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">Key Components</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Dashboard</h4>
+          <p className="text-sm text-muted-foreground">
+            The central hub for monitoring safety metrics, viewing recent violations, and accessing 
+            all platform features.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Video Monitoring</h4>
+          <p className="text-sm text-muted-foreground">
+            Upload, process, and review video footage with AI-powered safety violation detection.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Safety Analytics</h4>
+          <p className="text-sm text-muted-foreground">
+            Comprehensive reporting and analysis tools to track safety metrics, identify patterns, 
+            and improve workplace safety over time.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Tenant Management</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure and manage different locations, facilities, or departments as separate tenants 
+            within the platform.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">Getting Started</h3>
+      
+      <ol className="list-decimal list-inside space-y-2 text-sm">
+        <li>Set up at least one tenant in Tenant Management</li>
+        <li>Configure cameras for monitoring</li>
+        <li>Upload your first video for processing</li>
+        <li>Review safety violations and analytics</li>
+        <li>Set up alerting for real-time notifications</li>
+      </ol>
+    </div>
+  );
 
-  const handleBackToList = () => {
-    setActiveDoc(null);
-  };
+  const cameraSetupContent = (
+    <div className="space-y-4">
+      <p>
+        Proper camera setup is essential for effective safety monitoring. This guide will help you 
+        configure and connect surveillance cameras to the InnoSynth platform.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">Supported Camera Types</h3>
+      
+      <ul className="list-disc list-inside space-y-2 text-sm">
+        <li>IP cameras (RTSP, ONVIF compatible)</li>
+        <li>Network Video Recorders (NVRs)</li>
+        <li>USB webcams (with streaming server)</li>
+        <li>CCTV cameras (with IP converter)</li>
+        <li>Cloud-based camera systems</li>
+      </ul>
+      
+      <h3 className="text-lg font-semibold mt-6">Camera Placement Guidelines</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Coverage Area</h4>
+          <p className="text-sm text-muted-foreground">
+            Position cameras to cover all critical work areas where safety compliance is required.
+            Avoid blind spots and ensure adequate coverage of entry/exit points.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Lighting Conditions</h4>
+          <p className="text-sm text-muted-foreground">
+            Ensure consistent, adequate lighting in monitored areas. Avoid direct sunlight on cameras
+            and consider infrared cameras for low-light environments.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Camera Height and Angle</h4>
+          <p className="text-sm text-muted-foreground">
+            Mount cameras at a height of 8-10 feet (2.4-3m) where possible. Angle cameras to clearly
+            capture workers and their safety equipment.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">Connection Process</h3>
+      
+      <ol className="list-decimal list-inside space-y-2 text-sm">
+        <li>Add a new camera in the tenant settings</li>
+        <li>Enter the camera's RTSP URL or connection details</li>
+        <li>Set detection zones and monitoring parameters</li>
+        <li>Test the connection and verify the video feed</li>
+        <li>Configure detection sensitivity and alerts</li>
+      </ol>
+    </div>
+  );
 
-  const userGuides = [
-    {
-      id: "quick-start",
-      title: "Quick Start Guide",
-      icon: <BookOpen className="h-5 w-5 text-primary" />,
-      description: "Set up your first safety monitoring system in minutes",
-    },
-    {
-      id: "camera-setup",
-      title: "Camera Configuration",
-      icon: <Video className="h-5 w-5 text-primary" />,
-      description: "Configure your cameras for optimal performance",
-    },
-    {
-      id: "violation-rules",
-      title: "Setting Up Violation Rules",
-      icon: <AlertTriangle className="h-5 w-5 text-primary" />,
-      description: "Create and manage custom violation detection rules",
-    },
-    {
-      id: "dashboard",
-      title: "Using the Dashboard",
-      icon: <CircleCheck className="h-5 w-5 text-primary" />,
-      description: "Navigate and understand your safety analytics dashboard",
-    },
-    {
-      id: "mobile-app",
-      title: "Mobile App Guide",
-      icon: <UserCircle className="h-5 w-5 text-primary" />,
-      description: "Monitor safety violations on the go",
-    },
-    {
-      id: "alerts",
-      title: "Setting Up Alerts",
-      icon: <Settings2 className="h-5 w-5 text-primary" />,
-      description: "Configure notifications for safety violations",
-    },
-    {
-      id: "api-usage",
-      title: "API Integration",
-      icon: <Code className="h-5 w-5 text-primary" />,
-      description: "Integrate your safety system with other applications",
-    },
-    {
-      id: "reports",
-      title: "Generating Reports",
-      icon: <FileText className="h-5 w-5 text-primary" />,
-      description: "Create and schedule comprehensive safety reports",
-    },
-    {
-      id: "troubleshooting",
-      title: "Troubleshooting Guide",
-      icon: <HelpCircle className="h-5 w-5 text-primary" />,
-      description: "Solutions to common issues and questions",
-    },
-  ];
-
-  const faqs = [
-    {
-      question: "How accurate is the violation detection?",
-      answer: "Our AI-based violation detection system achieves over 98% accuracy in most environments. The system is continuously trained on new data to improve detection capabilities and reduce false positives. Results may vary based on camera quality, lighting conditions, and other environmental factors."
-    },
-    {
-      question: "Can I use my existing cameras?",
-      answer: "Yes, InnoSynth is designed to work with most standard IP cameras. Our system supports RTSP, HTTP, and ONVIF protocols. You can integrate your existing camera infrastructure without purchasing new hardware. For optimal performance, we recommend cameras with at least 720p resolution and good low-light capabilities."
-    },
-    {
-      question: "How secure is the data storage?",
-      answer: "We employ industry-leading security measures including end-to-end encryption for data in transit and at rest. All footage and violation data is stored in SOC 2 compliant data centers with rigorous access controls and regular security audits. Our platform also offers customizable data retention policies to comply with your organization's requirements."
-    },
-    {
-      question: "Can I customize the violation rules?",
-      answer: "Absolutely. InnoSynth offers a flexible rules engine that allows you to define and configure safety rules specific to your environment. You can set up different rules for different areas, time periods, and job types. Our system also supports rule templates for common industry standards like OSHA, ISO, and other regulatory frameworks."
-    },
-    {
-      question: "What kind of reports can I generate?",
-      answer: "Our platform offers comprehensive reporting capabilities including daily, weekly, and monthly safety summaries, violation trend analysis, compliance status reports, area-specific safety metrics, and custom reports. All reports can be exported in multiple formats including PDF, CSV, and Excel, and can be scheduled for automatic delivery via email."
-    },
-    {
-      question: "How many cameras can the system support?",
-      answer: "The number of supported cameras depends on your subscription plan. Our Free tier supports 1 camera, Standard tier supports up to 15 cameras, and Enterprise tier supports unlimited cameras. All plans include real-time monitoring, though processing capacity and storage duration vary by plan."
-    },
-    {
-      question: "Is there a mobile app available?",
-      answer: "Yes, InnoSynth offers mobile applications for both iOS and Android devices. The mobile app provides real-time alerts, allows you to view live camera feeds, check violation reports, and manage basic system settings on the go. Mobile push notifications ensure you never miss critical safety incidents."
-    },
-    {
-      question: "How long is footage stored?",
-      answer: "Data retention varies by plan: Free tier stores footage for 3 days, Standard tier for 30 days, and Enterprise tier for 90 days. Custom retention policies are available for Enterprise customers to meet specific regulatory or organizational requirements. All plans include violation event storage with screenshots."
-    },
-    {
-      question: "Can I integrate with other systems?",
-      answer: "Yes, InnoSynth provides a comprehensive API that allows integration with various enterprise systems including HRIS, ERP, compliance management platforms, and third-party reporting tools. We also offer pre-built integrations with popular platforms like Slack, Microsoft Teams, and various email services for notifications."
-    },
-    {
-      question: "What kind of support is available?",
-      answer: "Support options vary by plan. Free tier includes email support with 48-hour response time. Standard tier includes priority email and chat support with 24-hour response time. Enterprise tier includes 24/7 phone, email, and chat support with dedicated account management and SLA guarantees for critical issues."
-    },
-    {
-      question: "How does billing work?",
-      answer: "We offer both monthly and annual billing options, with a 20% discount for annual commitments. You can upgrade or downgrade your plan at any time, with prorated billing adjustments. All plans come with a 14-day trial period during which you can cancel without any charges."
-    },
-    {
-      question: "Can the system detect specific types of violations?",
-      answer: "Yes, our AI system can detect a wide range of safety violations including PPE compliance (hard hats, safety vests, gloves, etc.), restricted area access, unsafe behavior (running in facilities, improper lifting), equipment misuse, and environmental hazards. Enterprise customers can request custom detection models for specific use cases."
-    }
-  ];
-
-  // Document content for quick-start guide
-  const quickStartContent = (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Quick Start Guide</h2>
-        <p className="mb-4">This guide will help you set up your first safety monitoring system using InnoSynth's AI-powered platform in just a few simple steps.</p>
-      </div>
+  const violationDetectionContent = (
+    <div className="space-y-4">
+      <p>
+        The InnoSynth platform uses advanced AI algorithms to detect safety violations in real-time.
+        This guide explains how to configure and customize safety violation detection rules.
+      </p>
       
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Step 1: Create Your Account</h3>
-        <div className="pl-6 space-y-2">
-          <p>• Register a new account at <span className="font-medium">app.innosynth.com</span> or through our mobile app.</p>
-          <p>• Verify your email address to activate your account.</p>
-          <p>• Complete your organization profile with basic information about your facility.</p>
+      <h3 className="text-lg font-semibold mt-6">Supported Violation Types</h3>
+      
+      <div className="grid grid-cols-2 gap-4">
+        <div className="p-3 border rounded-md">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <span className="font-medium">Missing Helmet</span>
+          </div>
+        </div>
+        
+        <div className="p-3 border rounded-md">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <span className="font-medium">No Safety Vest</span>
+          </div>
+        </div>
+        
+        <div className="p-3 border rounded-md">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <span className="font-medium">Missing Mask</span>
+          </div>
+        </div>
+        
+        <div className="p-3 border rounded-md">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <span className="font-medium">No Safety Glasses</span>
+          </div>
+        </div>
+        
+        <div className="p-3 border rounded-md">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <span className="font-medium">No Gloves</span>
+          </div>
+        </div>
+        
+        <div className="p-3 border rounded-md">
+          <div className="flex items-center">
+            <AlertTriangle className="h-4 w-4 text-red-500 mr-2" />
+            <span className="font-medium">Unauthorized Access</span>
+          </div>
         </div>
       </div>
       
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Step 2: Connect Your First Camera</h3>
-        <div className="pl-6 space-y-2">
-          <p>• Navigate to the <span className="font-medium">Cameras</span> section in your dashboard.</p>
-          <p>• Click on <span className="font-medium">Add Camera</span> and select your connection method (IP, RTSP, ONVIF).</p>
-          <p>• Enter the required camera credentials and connection details.</p>
-          <p>• Position your camera to cover the area you want to monitor.</p>
-        </div>
-      </div>
+      <h3 className="text-lg font-semibold mt-6">Configuring Detection Rules</h3>
       
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Step 3: Configure Basic Safety Rules</h3>
-        <div className="pl-6 space-y-2">
-          <p>• Go to the <span className="font-medium">Rules</span> section and select <span className="font-medium">Create Rule</span>.</p>
-          <p>• Choose from our pre-configured rule templates or create a custom rule.</p>
-          <p>• Specify the cameras this rule applies to and set any thresholds or conditions.</p>
-          <p>• Save your rule to activate violation detection.</p>
+        <div>
+          <h4 className="font-medium">Setting Detection Zones</h4>
+          <p className="text-sm text-muted-foreground">
+            Define specific areas within the camera view where safety rules should be enforced.
+            Different zones can have different safety requirements.
+          </p>
         </div>
-      </div>
-      
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Step 4: Set Up Notifications</h3>
-        <div className="pl-6 space-y-2">
-          <p>• Navigate to <span className="font-medium">Settings > Notifications</span>.</p>
-          <p>• Choose your preferred notification channels (email, SMS, mobile push).</p>
-          <p>• Configure which violations should trigger notifications.</p>
-          <p>• Optionally, set up escalation rules for critical violations.</p>
+        
+        <div>
+          <h4 className="font-medium">Detection Sensitivity</h4>
+          <p className="text-sm text-muted-foreground">
+            Adjust the sensitivity level for each violation type to reduce false positives or
+            ensure all potential violations are captured.
+          </p>
         </div>
-      </div>
-      
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold">Step 5: Monitor Your Dashboard</h3>
-        <div className="pl-6 space-y-2">
-          <p>• Return to the <span className="font-medium">Dashboard</span> to view your safety monitoring in action.</p>
-          <p>• Check the <span className="font-medium">Live View</span> to see real-time camera feeds.</p>
-          <p>• Review <span className="font-medium">Recent Violations</span> to see detected safety issues.</p>
-          <p>• Explore analytics to understand safety trends as data accumulates.</p>
+        
+        <div>
+          <h4 className="font-medium">Time-Based Rules</h4>
+          <p className="text-sm text-muted-foreground">
+            Set different safety requirements based on time of day, shift schedules, or days of the week.
+          </p>
         </div>
-      </div>
-      
-      <div className="bg-muted p-4 rounded-lg">
-        <h3 className="text-lg font-semibold mb-2">Next Steps</h3>
-        <ul className="list-disc pl-6 space-y-1">
-          <li>Explore advanced rule configurations</li>
-          <li>Set up integrations with other systems</li>
-          <li>Configure automated reporting</li>
-          <li>Add more cameras to expand coverage</li>
-          <li>Train additional team members on using the platform</li>
-        </ul>
-      </div>
-      
-      <div className="flex justify-start mt-8">
-        <Button onClick={handleBackToList} className="flex items-center gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Back to Documentation
-        </Button>
       </div>
     </div>
   );
 
-  // Render documentation content based on active doc
-  const renderDocContent = () => {
-    if (isContentLoading) {
-      return (
-        <div className="flex items-center justify-center h-64">
-          <LoadingSpinner size="lg" />
-        </div>
-      );
-    }
-
-    if (activeDoc === "quick-start") {
-      return quickStartContent;
-    }
-
-    // For other docs, we'll show a placeholder with the title
-    const guide = userGuides.find(g => g.id === activeDoc);
-    if (!guide) return null;
-
-    return (
-      <div className="space-y-6">
+  const safetyAnalyticsContent = (
+    <div className="space-y-4">
+      <p>
+        InnoSynth provides comprehensive safety analytics to help you understand safety compliance
+        trends, identify problem areas, and make data-driven decisions to improve workplace safety.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">Available Analytics</h3>
+      
+      <div className="space-y-4">
         <div>
-          <h2 className="text-2xl font-bold mb-4">{guide.title}</h2>
-          <p className="mb-4">Detailed documentation for this feature is being prepared. Check back soon for the complete guide.</p>
+          <h4 className="font-medium">Compliance Rate</h4>
+          <p className="text-sm text-muted-foreground">
+            Overall safety compliance percentage across all monitored areas, with historical trends
+            and comparisons.
+          </p>
         </div>
         
-        <div className="bg-muted p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">This guide will cover:</h3>
-          <ul className="list-disc pl-6 space-y-1">
-            <li>Detailed setup instructions</li>
-            <li>Best practices and recommendations</li>
-            <li>Troubleshooting common issues</li>
-            <li>Advanced configuration options</li>
-          </ul>
+        <div>
+          <h4 className="font-medium">Violation Breakdown</h4>
+          <p className="text-sm text-muted-foreground">
+            Detailed analysis of violations by type, time, location, and severity.
+          </p>
         </div>
         
-        <div className="flex justify-start mt-8">
-          <Button onClick={handleBackToList} className="flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Documentation
-          </Button>
+        <div>
+          <h4 className="font-medium">Zone Analysis</h4>
+          <p className="text-sm text-muted-foreground">
+            Compare safety compliance across different zones or work areas to identify problem spots.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Time-Based Patterns</h4>
+          <p className="text-sm text-muted-foreground">
+            Identify patterns in safety violations by time of day, day of week, or shift.
+          </p>
         </div>
       </div>
-    );
-  };
+      
+      <h3 className="text-lg font-semibold mt-6">Using Analytics Reports</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Dashboard Overview</h4>
+          <p className="text-sm text-muted-foreground">
+            The main dashboard provides key metrics and recent violations for quick monitoring.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Detailed Reports</h4>
+          <p className="text-sm text-muted-foreground">
+            Generate detailed reports for specific time periods, zones, or violation types.
+            Export reports in PDF, CSV, or Excel formats.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Setting Alerts</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure thresholds for key metrics to receive alerts when safety compliance falls
+            below acceptable levels.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const tenantManagementContent = (
+    <div className="space-y-4">
+      <p>
+        The tenant management system allows you to organize and manage multiple facilities, 
+        departments, or clients within a single InnoSynth platform instance.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">Tenant Structure</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Tenant Organization</h4>
+          <p className="text-sm text-muted-foreground">
+            Each tenant represents a separate entity with its own cameras, users, and safety rules.
+            Tenants can be physically separate locations or different departments within the same location.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Tenant Hierarchy</h4>
+          <p className="text-sm text-muted-foreground">
+            Tenants can be organized in a hierarchical structure with parent-child relationships
+            for complex organizational structures.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">Managing Tenants</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Creating Tenants</h4>
+          <p className="text-sm text-muted-foreground">
+            Add new tenants through the Tenant Management page. Provide a name and configure
+            basic settings for the tenant.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Tenant Settings</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure tenant-specific settings including cameras, user access, notification
+            preferences, and detection rules.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">User Management</h4>
+          <p className="text-sm text-muted-foreground">
+            Assign users to specific tenants with appropriate permission levels. Users can have
+            access to multiple tenants with different permissions for each.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const systemConfigContent = (
+    <div className="space-y-4">
+      <p>
+        InnoSynth offers extensive configuration options to customize the platform to your specific
+        needs and requirements.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">System Settings</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">API Configuration</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure API endpoints and authentication for integration with external systems.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Processing Resources</h4>
+          <p className="text-sm text-muted-foreground">
+            Allocate CPU and memory resources for video processing to optimize performance.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Storage Management</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure storage settings for video files, including retention periods and storage locations.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">Notification Settings</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Email Notifications</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure email notification settings for safety violations and system alerts.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Webhook Integration</h4>
+          <p className="text-sm text-muted-foreground">
+            Set up webhooks to trigger external systems or applications when safety violations occur.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Alert Rules</h4>
+          <p className="text-sm text-muted-foreground">
+            Create custom alert rules with specific conditions and notification methods.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">User Management</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">User Roles</h4>
+          <p className="text-sm text-muted-foreground">
+            Define custom user roles with specific permissions and access levels.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Authentication Settings</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure authentication methods, including single sign-on (SSO) and multi-factor authentication.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+  
+  const securityContent = (
+    <div className="space-y-4">
+      <p>
+        InnoSynth prioritizes security to protect sensitive safety monitoring data and ensure
+        secure access to the platform.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">Security Features</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Data Encryption</h4>
+          <p className="text-sm text-muted-foreground">
+            All data is encrypted both in transit and at rest using industry-standard encryption protocols.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Access Controls</h4>
+          <p className="text-sm text-muted-foreground">
+            Fine-grained access controls with role-based permissions ensure users only have access to
+            the data and features they need.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Multi-Factor Authentication</h4>
+          <p className="text-sm text-muted-foreground">
+            Enable MFA for additional security when accessing the platform.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">Security Best Practices</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Regular Audits</h4>
+          <p className="text-sm text-muted-foreground">
+            Conduct regular security audits to identify and address potential vulnerabilities.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Password Policies</h4>
+          <p className="text-sm text-muted-foreground">
+            Implement strong password policies and regular password rotation for all users.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Activity Monitoring</h4>
+          <p className="text-sm text-muted-foreground">
+            Monitor and log all user activity for security and compliance purposes.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+  
+  const dataManagementContent = (
+    <div className="space-y-4">
+      <p>
+        Effective data management is crucial for maintaining the performance and reliability of the
+        InnoSynth platform.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">Video Data Management</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Storage Options</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure local storage, network storage, or cloud storage options for video data.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Retention Policies</h4>
+          <p className="text-sm text-muted-foreground">
+            Set up data retention policies to automatically archive or delete older video data.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Data Compression</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure video compression settings to optimize storage usage without compromising
+            detection accuracy.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">Database Management</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Database Maintenance</h4>
+          <p className="text-sm text-muted-foreground">
+            Regular database maintenance tasks to ensure optimal performance.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Backup Procedures</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure automated backups for all system data to prevent data loss.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Data Export</h4>
+          <p className="text-sm text-muted-foreground">
+            Export safety data and reports in various formats for further analysis or integration
+            with other systems.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+  
+  const userManagementContent = (
+    <div className="space-y-4">
+      <p>
+        InnoSynth provides comprehensive user management tools to control access and permissions
+        within the platform.
+      </p>
+      
+      <h3 className="text-lg font-semibold mt-6">User Roles</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Administrator</h4>
+          <p className="text-sm text-muted-foreground">
+            Full access to all platform features and settings.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Manager</h4>
+          <p className="text-sm text-muted-foreground">
+            Access to manage tenants, view reports, and configure basic settings.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Operator</h4>
+          <p className="text-sm text-muted-foreground">
+            Access to monitor violations, review videos, and generate reports.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Viewer</h4>
+          <p className="text-sm text-muted-foreground">
+            Read-only access to view safety data and reports.
+          </p>
+        </div>
+      </div>
+      
+      <h3 className="text-lg font-semibold mt-6">User Administration</h3>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium">Creating Users</h4>
+          <p className="text-sm text-muted-foreground">
+            Add new users with specific roles and tenant access.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">Permission Management</h4>
+          <p className="text-sm text-muted-foreground">
+            Configure detailed permissions for each user or role.
+          </p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium">User Groups</h4>
+          <p className="text-sm text-muted-foreground">
+            Create user groups for easier permission management.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" onClick={() => navigate(-1)} className="mr-2">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+    <div className="container py-6 space-y-8">
+      <div className="flex items-center space-x-2">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => navigate(-1)}
+        >
+          <ArrowLeft className="h-4 w-4 mr-1" />
           Back
         </Button>
-        <Breadcrumb className="hidden md:flex">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink as={Button} variant="link" onClick={() => navigate('/')}>Home</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Documentation</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Documentation</h1>
-        <p className="text-muted-foreground">
-          Find guides, tutorials, and answers to frequently asked questions about InnoSynth
-        </p>
-      </div>
-
-      <div className="mb-6">
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="pl-10"
-            placeholder="Search documentation..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Documentation</h1>
+          <p className="text-muted-foreground">
+            Comprehensive guides and documentation for using the InnoSynth platform.
+          </p>
         </div>
       </div>
 
-      {!activeDoc ? (
-        <Tabs defaultValue="guides" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="guides">User Guides</TabsTrigger>
-            <TabsTrigger value="faqs">FAQs</TabsTrigger>
-            <TabsTrigger value="api">API Reference</TabsTrigger>
-          </TabsList>
+      <Tabs defaultValue="guides" className="space-y-4">
+        <TabsList className="grid grid-cols-3 w-full max-w-md">
+          <TabsTrigger value="guides">User Guides</TabsTrigger>
+          <TabsTrigger value="api">API Reference</TabsTrigger>
+          <TabsTrigger value="faqs">FAQs</TabsTrigger>
+        </TabsList>
 
-          <TabsContent value="guides" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {userGuides.map((guide) => (
-                <Card key={guide.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                      <div className="p-2 rounded-md bg-primary/10">
-                        {guide.icon}
-                      </div>
+        <TabsContent value="guides" className="space-y-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Getting Started</CardTitle>
+              <CardDescription>
+                Essential guides to help you start using the platform efficiently.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <DocCard 
+                  icon={<BookOpen className="h-5 w-5" />}
+                  title="Platform Overview"
+                  description="Learn about the core features and capabilities of the InnoSynth platform."
+                  onClick={() => handleDocCardClick("Platform Overview", platformOverviewContent)}
+                />
+                <DocCard 
+                  icon={<Camera className="h-5 w-5" />}
+                  title="Camera Setup"
+                  description="Instructions for configuring and connecting surveillance cameras."
+                  onClick={() => handleDocCardClick("Camera Setup", cameraSetupContent)}
+                />
+                <DocCard 
+                  icon={<AlertTriangle className="h-5 w-5" />}
+                  title="Safety Violation Detection"
+                  description="How to configure and customize safety violation detection rules."
+                  onClick={() => handleDocCardClick("Safety Violation Detection", violationDetectionContent)}
+                />
+                <DocCard 
+                  icon={<ChartBar className="h-5 w-5" />}
+                  title="Safety Analytics"
+                  description="Understand safety statistics and reporting features."
+                  onClick={() => handleDocCardClick("Safety Analytics", safetyAnalyticsContent)}
+                />
+                <DocCard 
+                  icon={<Users className="h-5 w-5" />}
+                  title="Tenant Management"
+                  description="How to add, edit, and manage tenant information."
+                  onClick={() => handleDocCardClick("Tenant Management", tenantManagementContent)}
+                />
+                <DocCard 
+                  icon={<Settings className="h-5 w-5" />}
+                  title="System Configuration"
+                  description="Detailed instructions for customizing system settings."
+                  onClick={() => handleDocCardClick("System Configuration", systemConfigContent)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Advanced Topics</CardTitle>
+              <CardDescription>
+                In-depth guides for advanced users and administrators.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <DocCard 
+                  icon={<Shield className="h-5 w-5" />}
+                  title="Security Best Practices"
+                  description="Recommended security configurations and best practices."
+                  onClick={() => handleDocCardClick("Security Best Practices", securityContent)}
+                />
+                <DocCard 
+                  icon={<Database className="h-5 w-5" />}
+                  title="Data Management"
+                  description="Guidelines for managing video data, backups, and storage."
+                  onClick={() => handleDocCardClick("Data Management", dataManagementContent)}
+                />
+                <DocCard 
+                  icon={<Users className="h-5 w-5" />}
+                  title="User Management"
+                  description="How to manage user roles, permissions, and access controls."
+                  onClick={() => handleDocCardClick("User Management", userManagementContent)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="api">
+          <Card>
+            <CardHeader>
+              <CardTitle>API Documentation</CardTitle>
+              <CardDescription>
+                Complete reference for the InnoSynth API endpoints and integration options.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Code className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Authentication</h3>
                     </div>
-                    <CardTitle className="mt-2">{guide.title}</CardTitle>
-                    <CardDescription>{guide.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button 
-                      variant="outline" 
-                      className="w-full flex items-center justify-between"
-                      onClick={() => handleViewDocumentation(guide.id)}
-                    >
-                      Read More <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+                    <div className="rounded-md bg-muted p-4">
+                      <pre className="text-sm"><code>{`// API Authentication Example
+POST /api/auth/token
+{
+  "apiKey": "your-api-key",
+  "secret": "your-api-secret"
+}
 
-          <TabsContent value="faqs">
-            <Card>
-              <CardHeader>
-                <CardTitle>Frequently Asked Questions</CardTitle>
-                <CardDescription>
-                  Find answers to common questions about InnoSynth and safety monitoring
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {faqs.map((faq, index) => (
-                    <AccordionItem key={index} value={`faq-${index}`}>
-                      <AccordionTrigger className="text-left">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-          </TabsContent>
+// Response
+{
+  "token": "jwt-token",
+  "expiresIn": 3600
+}`}</code></pre>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      All API requests must include a valid JWT token in the Authorization header.
+                    </p>
+                  </div>
 
-          <TabsContent value="api">
-            <Card>
-              <CardHeader>
-                <CardTitle>API Reference</CardTitle>
-                <CardDescription>
-                  Integration guides and API documentation for developers
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Getting Started</h3>
-                  <p>
-                    InnoSynth provides a RESTful API that allows you to integrate our safety monitoring capabilities
-                    into your existing systems. The API supports authentication via API keys or OAuth tokens.
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Camera className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Camera Endpoints</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/cameras</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Retrieve a list of all configured cameras.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/cameras/{"{id}"}</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Get details for a specific camera.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">POST /api/cameras</code>
+                        <span className="text-xs bg-green-500/10 text-green-500 px-2 py-1 rounded">POST</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Register a new camera.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">PUT /api/cameras/{"{id}"}</code>
+                        <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded">PUT</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Update camera configuration.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <AlertTriangle className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Violation Endpoints</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/violations</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Retrieve a list of detected safety violations.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/violations/stats</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Get statistical data about safety violations.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="faqs">
+          <Card>
+            <CardHeader>
+              <CardTitle>Frequently Asked Questions</CardTitle>
+              <CardDescription>
+                Common questions and answers about the InnoSynth platform.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">What hardware is required for InnoSynth?</h3>
+                  <p className="text-muted-foreground">
+                    InnoSynth works with standard IP cameras and requires a dedicated server for processing. Recommended specifications depend on the number of cameras and detection needs.
                   </p>
-                  <div className="p-4 rounded-md bg-muted text-sm">
-                    <pre>Base URL: https://api.innosynth.com/v1</pre>
-                  </div>
                 </div>
-                
-                <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Available Endpoints</h3>
-                  <div className="border rounded-md divide-y">
-                    <div className="p-4 flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="api-method api-method-get">GET</span>
-                          <span className="font-mono text-sm">/cameras</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">List all cameras</p>
-                      </div>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                    <div className="p-4 flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="api-method api-method-post">POST</span>
-                          <span className="font-mono text-sm">/cameras</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">Add a new camera</p>
-                      </div>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                    <div className="p-4 flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="api-method api-method-get">GET</span>
-                          <span className="font-mono text-sm">/violations</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">List violations</p>
-                      </div>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                    <div className="p-4 flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="api-method api-method-put">PUT</span>
-                          <span className="font-mono text-sm">/rules/{"{id}"}</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">Update safety rule</p>
-                      </div>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                    <div className="p-4 flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="api-method api-method-delete">DELETE</span>
-                          <span className="font-mono text-sm">/cameras/{"{id}"}</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">Remove camera</p>
-                      </div>
-                      <Button variant="outline" size="sm">View Details</Button>
-                    </div>
-                  </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">How accurate is the safety violation detection?</h3>
+                  <p className="text-muted-foreground">
+                    InnoSynth typically achieves 90-95% accuracy in standard environments. Detection accuracy can be improved through proper camera placement and customizing detection sensitivity.
+                  </p>
                 </div>
-                
-                <Button variant="outline" className="flex items-center gap-1">
-                  <FileText className="h-4 w-4" />
-                  Download Full API Documentation
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      ) : (
-        <div className="bg-white rounded-lg border p-6">
-          {renderDocContent()}
-        </div>
-      )}
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Is cloud storage supported?</h3>
+                  <p className="text-muted-foreground">
+                    Yes, InnoSynth supports both local and cloud storage options. Cloud storage integration is available with AWS S3, Google Cloud Storage, and Azure Blob Storage.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">How is data privacy maintained?</h3>
+                  <p className="text-muted-foreground">
+                    InnoSynth implements data encryption, access controls, and retention policies to maintain privacy. The system is designed to be compliant with GDPR and other privacy regulations.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Can InnoSynth integrate with other systems?</h3>
+                  <p className="text-muted-foreground">
+                    Yes, InnoSynth offers API integration with various building management systems, security platforms, and notification systems.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">What types of safety violations can be detected?</h3>
+                  <p className="text-muted-foreground">
+                    InnoSynth can detect various safety violations including missing protective equipment (helmets, vests, masks, gloves, safety glasses), unauthorized access to restricted areas, and other custom safety rules.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">How many cameras can the system support?</h3>
+                  <p className="text-muted-foreground">
+                    The number of cameras supported depends on your subscription plan and available processing resources. The Standard plan supports up to 15 cameras, while the Enterprise plan supports unlimited cameras.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Can I set up automated alerts for violations?</h3>
+                  <p className="text-muted-foreground">
+                    Yes, InnoSynth provides a comprehensive alerting system. You can configure email notifications, webhook integrations, and in-app alerts for different types of violations and system events.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">How long is video data stored?</h3>
+                  <p className="text-muted-foreground">
+                    Data retention depends on your subscription plan: 3 days for Free tier, 30 days for Standard, and 90 days for Enterprise. Custom retention policies can be configured based on your specific requirements.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Is there a mobile app available?</h3>
+                  <p className="text-muted-foreground">
+                    Yes, InnoSynth offers mobile apps for iOS and Android devices. The mobile app provides access to real-time alerts, violation reviews, and basic analytics dashboards.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Documentation dialog */}
+      <Dialog open={showDocDialog} onOpenChange={setShowDocDialog}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{selectedDoc?.title}</DialogTitle>
+          </DialogHeader>
+          {selectedDoc?.content}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -3,15 +3,9 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, AlertCircle, Mail } from "lucide-react";
+import { Check, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useLoading } from "@/components/shared/LoadingProvider";
-import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 interface PricingTierProps {
   title: string;
@@ -25,7 +19,6 @@ interface PricingTierProps {
   buttonText: string;
   popular?: boolean;
   onSelectPlan: () => void;
-  billingCycle: "monthly" | "annually";
 }
 
 const PricingTier: React.FC<PricingTierProps> = ({
@@ -37,7 +30,6 @@ const PricingTier: React.FC<PricingTierProps> = ({
   buttonText,
   popular,
   onSelectPlan,
-  billingCycle,
 }) => {
   return (
     <Card className={`flex flex-col ${popular ? "border-primary shadow-lg" : "border"}`}>
@@ -47,25 +39,16 @@ const PricingTier: React.FC<PricingTierProps> = ({
             <CardTitle className="text-xl">{title}</CardTitle>
             <CardDescription className="mt-1.5">{description}</CardDescription>
           </div>
-          {popular && <Badge className="bg-primary text-white">Popular</Badge>}
+          {popular && <Badge className="bg-primary">Popular</Badge>}
         </div>
       </CardHeader>
       <CardContent className="flex-1">
         <div className="mb-6">
-          <div className="text-3xl font-bold">
-            ${billingCycle === "monthly" ? price.monthly : price.annually}
-          </div>
+          <div className="text-3xl font-bold">${price.monthly}</div>
           <div className="text-sm text-muted-foreground">per month</div>
-          {billingCycle === "monthly" && (
-            <div className="text-sm text-muted-foreground mt-1">
-              ${price.annually} billed annually (save 20%)
-            </div>
-          )}
-          {billingCycle === "annually" && (
-            <div className="text-sm text-primary font-medium mt-1">
-              You save 20% with annual billing
-            </div>
-          )}
+          <div className="text-sm text-muted-foreground mt-1">
+            ${price.annually} billed annually
+          </div>
         </div>
         <ul className="space-y-2 mb-6">
           {features.map((feature, i) => (
@@ -95,129 +78,14 @@ const PricingTier: React.FC<PricingTierProps> = ({
   );
 };
 
-const ContactDialog: React.FC<{
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}> = ({ open, onOpenChange }) => {
-  const [name, setName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [companyName, setCompanyName] = React.useState("");
-  const [message, setMessage] = React.useState("");
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("Your sales inquiry has been submitted. We'll be in touch soon!");
-      setIsSubmitting(false);
-      onOpenChange(false);
-      
-      // Reset form
-      setName("");
-      setEmail("");
-      setCompanyName("");
-      setMessage("");
-    }, 1000);
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Contact Sales</DialogTitle>
-          <DialogDescription>
-            Tell us about your requirements for a personalized Enterprise solution.
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input 
-                id="name" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                placeholder="Your name" 
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input 
-                id="email" 
-                type="email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder="your.email@company.com" 
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="company">Company Name</Label>
-              <Input 
-                id="company" 
-                value={companyName} 
-                onChange={(e) => setCompanyName(e.target.value)} 
-                placeholder="Your company" 
-                required 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="message">Message</Label>
-              <Textarea 
-                id="message" 
-                value={message} 
-                onChange={(e) => setMessage(e.target.value)} 
-                placeholder="Tell us about your requirements" 
-                rows={4}
-                required 
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <LoadingSpinner size="sm" className="mr-2" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Mail className="mr-2 h-4 w-4" />
-                  Send Inquiry
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
 const Pricing: React.FC = () => {
   const [billingCycle, setBillingCycle] = React.useState<"monthly" | "annually">("monthly");
-  const [contactDialogOpen, setContactDialogOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { setLoading } = useLoading();
 
   const handleSelectPlan = (planName: string) => {
-    if (planName === "Enterprise") {
-      setContactDialogOpen(true);
-      return;
-    }
-    
-    setLoading(true);
-    // Simulate loading time before redirection
-    setTimeout(() => {
-      toast.success(`Selected ${planName} plan with ${billingCycle} billing cycle`);
-      setLoading(false);
-      // In a real application, this would redirect to a checkout page or show a payment modal
-      navigate("/profile");
-    }, 1000);
+    toast.success(`Selected ${planName} plan with ${billingCycle} billing cycle`);
+    // In a real application, this would redirect to a checkout page or show a payment modal
+    navigate("/profile");
   };
 
   return (
@@ -270,7 +138,6 @@ const Pricing: React.FC = () => {
           ]}
           buttonText="Start Free"
           onSelectPlan={() => handleSelectPlan("Free")}
-          billingCycle={billingCycle}
         />
         
         <PricingTier
@@ -295,7 +162,6 @@ const Pricing: React.FC = () => {
           buttonText="Get Started"
           popular={true}
           onSelectPlan={() => handleSelectPlan("Standard")}
-          billingCycle={billingCycle}
         />
         
         <PricingTier
@@ -318,7 +184,6 @@ const Pricing: React.FC = () => {
           limitations={[]}
           buttonText="Contact Sales"
           onSelectPlan={() => handleSelectPlan("Enterprise")}
-          billingCycle={billingCycle}
         />
       </div>
 
@@ -347,10 +212,8 @@ const Pricing: React.FC = () => {
       <div className="mt-12 p-6 bg-muted rounded-lg text-center">
         <h2 className="text-xl font-semibold mb-2">Need a custom solution?</h2>
         <p className="mb-4">Contact our sales team for a tailored package that fits your specific requirements.</p>
-        <Button variant="outline" onClick={() => setContactDialogOpen(true)}>Contact Sales</Button>
+        <Button variant="outline">Contact Sales</Button>
       </div>
-
-      <ContactDialog open={contactDialogOpen} onOpenChange={setContactDialogOpen} />
     </div>
   );
 };

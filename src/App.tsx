@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/layout/MainLayout";
 import Dashboard from "./pages/Dashboard";
 import Videos from "./pages/Videos";
@@ -20,7 +20,6 @@ import HelpSupport from "./pages/HelpSupport";
 import Pricing from "./pages/Pricing";
 import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
-import LoadingProvider from "./components/shared/LoadingProvider";
 
 // Initialize API base URL from localStorage or default
 if (typeof window !== 'undefined') {
@@ -49,32 +48,29 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <LoadingProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Navigate to="/landing" replace />} />
-              <Route path="/landing" element={<Landing />} />
-              <Route element={<MainLayout />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/videos" element={<Videos />} />
-                <Route path="/violations" element={<Violations />} />
-                <Route path="/stats" element={<Stats />} />
-                <Route path="/tenants" element={<Tenants />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/data-rights" element={<DataRights />} />
-                <Route path="/documentation" element={<Documentation />} />
-                <Route path="/help-support" element={<HelpSupport />} />
-                <Route path="/pricing" element={<Pricing />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </LoadingProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/landing" element={<Landing />} />
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/videos" element={<Videos />} />
+              <Route path="/violations" element={<Violations />} />
+              <Route path="/stats" element={<Stats />} />
+              <Route path="/tenants" element={<Tenants />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/data-rights" element={<DataRights />} />
+              <Route path="/documentation" element={<Documentation />} />
+              <Route path="/help-support" element={<HelpSupport />} />
+              <Route path="/pricing" element={<Pricing />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
