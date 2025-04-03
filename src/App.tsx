@@ -12,6 +12,11 @@ import Stats from "./pages/Stats";
 import Tenants from "./pages/Tenants";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import DataRights from "./pages/DataRights";
+import Documentation from "./pages/Documentation";
+import HelpSupport from "./pages/HelpSupport";
 import NotFound from "./pages/NotFound";
 
 // Initialize API base URL from localStorage or default
@@ -52,6 +57,11 @@ const App = () => (
             <Route path="/tenants" element={<Tenants />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/data-rights" element={<DataRights />} />
+            <Route path="/documentation" element={<Documentation />} />
+            <Route path="/help-support" element={<HelpSupport />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

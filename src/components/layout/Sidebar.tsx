@@ -6,7 +6,8 @@ import {
   LayoutDashboard, 
   Shield, 
   AlertTriangle,
-  Users
+  Users,
+  Settings as SettingsIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -18,13 +19,14 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
-// Updated navigation items without Settings
+// Updated navigation items with Settings
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Video Monitoring", href: "/videos", icon: Camera },
   { name: "Safety Violations", href: "/violations", icon: AlertTriangle },
   { name: "Safety Stats", href: "/stats", icon: Shield },
   { name: "Tenants", href: "/tenants", icon: Users },
+  { name: "Settings", href: "/settings", icon: SettingsIcon },
 ];
 
 const NavItem = ({ item, mobile = false, onNavigate }: { 
@@ -107,7 +109,7 @@ const Sidebar: React.FC = () => {
           <div className="mb-8 px-3">
             <div className="flex items-center">
               <Shield className="h-6 w-6 text-primary mr-2" />
-              <h1 className="text-lg font-bold text-sidebar-foreground">Safety Vision</h1>
+              <h1 className="text-lg font-bold text-sidebar-foreground">InnoSynth</h1>
             </div>
           </div>
           <nav className="space-y-1 px-2">
@@ -125,7 +127,7 @@ const Sidebar: React.FC = () => {
       <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4 mb-5">
           <Shield className="h-6 w-6 text-primary mr-2" />
-          <h1 className="text-lg font-bold text-sidebar-foreground">Safety Vision</h1>
+          <h1 className="text-lg font-bold text-sidebar-foreground">InnoSynth</h1>
         </div>
         <nav className="mt-2 flex-1 px-2 space-y-1">
           {navigation.map((item) => (

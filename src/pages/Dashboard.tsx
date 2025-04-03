@@ -9,11 +9,14 @@ import { Button } from "@/components/ui/button";
 
 const Dashboard: React.FC = () => {
   const [stats, setStats] = React.useState(mockData.stats);
-  const [liveCameraUrl, setLiveCameraUrl] = useState<string | null>(null);
+  const [liveCameraUrl, setLiveCameraUrl] = useState<string | null>("https://www.youtube.com/embed/s1C8wYy3xDU");
   const [liveCameraInfo, setLiveCameraInfo] = useState<{
     tenantId: string;
     cameraId: string;
-  } | null>(null);
+  } | null>({
+    tenantId: "demo",
+    cameraId: "demo-cam-01"
+  });
 
   useEffect(() => {
     // In a real app, you'd fetch this data from your API
@@ -28,7 +31,7 @@ const Dashboard: React.FC = () => {
     // Using mock data for now
     setStats(mockData.stats);
     
-    // Get live camera URL from localStorage
+    // Get live camera URL from localStorage or use default test URL
     const cameraUrl = localStorage.getItem('liveCameraUrl');
     const tenantId = localStorage.getItem('liveCameraTenant');
     const cameraId = localStorage.getItem('liveCameraId');
@@ -39,6 +42,18 @@ const Dashboard: React.FC = () => {
         tenantId,
         cameraId
       });
+    } else {
+      // Set default test URL if none is in localStorage
+      setLiveCameraUrl("https://www.youtube.com/embed/s1C8wYy3xDU");
+      setLiveCameraInfo({
+        tenantId: "demo",
+        cameraId: "demo-cam-01"
+      });
+      
+      // Save default values to localStorage
+      localStorage.setItem('liveCameraUrl', "https://www.youtube.com/embed/s1C8wYy3xDU");
+      localStorage.setItem('liveCameraTenant', "demo");
+      localStorage.setItem('liveCameraId', "demo-cam-01");
     }
   }, []);
 

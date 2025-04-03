@@ -11,7 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Updated navigation items without Settings
+// Navigation items without Settings for mobile footer
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Video Monitoring", href: "/videos", icon: Camera },
