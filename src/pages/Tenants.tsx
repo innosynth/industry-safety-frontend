@@ -58,6 +58,8 @@ const Tenants: React.FC = () => {
   const [newTenantName, setNewTenantName] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [tenantToDelete, setTenantToDelete] = useState<string | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingTenant, setEditingTenant] = useState<{id: string, name: string} | null>(null);
 
   const handleAddTenant = () => {
     if (!newTenantName.trim()) {
@@ -88,6 +90,26 @@ const Tenants: React.FC = () => {
       setShowDeleteDialog(false);
       setTenantToDelete(null);
       toast.success("Tenant deleted successfully");
+    }
+  };
+
+  const handleEditTenant = (id: string, name: string) => {
+    setEditingTenant({ id, name });
+    setShowEditDialog(true);
+  };
+
+  const confirmEditTenant = () => {
+    if (editingTenant) {
+      setTenants(
+        tenants.map(tenant => 
+          tenant.id === editingTenant.id 
+            ? { ...tenant, name: editingTenant.name }
+            : tenant
+        )
+      );
+      setShowEditDialog(false);
+      setEditingTenant(null);
+      toast.success("Tenant updated successfully");
     }
   };
 
@@ -227,7 +249,14 @@ const Tenants: React.FC = () => {
                                     <p className="text-xs text-muted-foreground">{tenant.id}</p>
                                   </div>
                                 </div>
-                                <Button variant="ghost" size="icon">
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(tenant.id);
+                                    toast.success("Tenant ID copied to clipboard");
+                                  }}
+                                >
                                   <Copy className="h-4 w-4" />
                                 </Button>
                               </div>
@@ -264,13 +293,24 @@ const Tenants: React.FC = () => {
                               </div>
                               
                               <div className="pt-4">
-                                <Button className="w-full">Save Changes</Button>
+                                <Button 
+                                  className="w-full"
+                                  onClick={() => {
+                                    toast.success("Tenant settings saved");
+                                  }}
+                                >
+                                  Save Changes
+                                </Button>
                               </div>
                             </div>
                           </SheetContent>
                         </Sheet>
                         
-                        <Button variant="outline" size="icon">
+                        <Button 
+                          variant="outline" 
+                          size="icon"
+                          onClick={() => handleEditTenant(tenant.id, tenant.name)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         
@@ -306,6 +346,36 @@ const Tenants: React.FC = () => {
             </Button>
             <Button variant="destructive" onClick={confirmDeleteTenant}>
               Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit tenant dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Tenant</DialogTitle>
+            <DialogDescription>
+              Update the tenant information.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-tenant-name">Tenant Name</Label>
+              <Input 
+                id="edit-tenant-name" 
+                value={editingTenant?.name || ""}
+                onChange={(e) => setEditingTenant(prev => prev ? {...prev, name: e.target.value} : null)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmEditTenant}>
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>

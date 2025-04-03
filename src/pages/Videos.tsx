@@ -25,7 +25,15 @@ import {
   Clock
 } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger,
+  DialogFooter,
+  DialogDescription
+} from "@/components/ui/dialog";
 import { mockData } from "@/services/api";
 
 const Videos: React.FC = () => {
@@ -33,6 +41,8 @@ const Videos: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editingVideo, setEditingVideo] = useState<{id: string, name: string} | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -94,6 +104,26 @@ const Videos: React.FC = () => {
   const handleDeleteVideo = (id: string) => {
     setVideos(videos.filter(video => video.id !== id));
     toast.success("Video deleted successfully");
+  };
+
+  const handleEditVideo = (id: string, name: string) => {
+    setEditingVideo({ id, name });
+    setShowEditDialog(true);
+  };
+
+  const confirmEditVideo = () => {
+    if (editingVideo) {
+      setVideos(
+        videos.map(video => 
+          video.id === editingVideo.id 
+            ? { ...video, name: editingVideo.name }
+            : video
+        )
+      );
+      setShowEditDialog(false);
+      setEditingVideo(null);
+      toast.success("Video updated successfully");
+    }
   };
 
   const filteredVideos = videos.filter(video => 
@@ -209,7 +239,11 @@ const Videos: React.FC = () => {
                                 </div>
                               </DialogContent>
                             </Dialog>
-                            <Button variant="outline" size="icon">
+                            <Button 
+                              variant="outline" 
+                              size="icon"
+                              onClick={() => handleEditVideo(video.id, video.name)}
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
                             <Button 
@@ -300,6 +334,36 @@ const Videos: React.FC = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Edit video dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Video</DialogTitle>
+            <DialogDescription>
+              Update the video information.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-video-name">Video Name</Label>
+              <Input 
+                id="edit-video-name" 
+                value={editingVideo?.name || ""}
+                onChange={(e) => setEditingVideo(prev => prev ? {...prev, name: e.target.value} : null)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmEditVideo}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

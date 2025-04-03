@@ -17,6 +17,8 @@ import Privacy from "./pages/Privacy";
 import DataRights from "./pages/DataRights";
 import Documentation from "./pages/Documentation";
 import HelpSupport from "./pages/HelpSupport";
+import Pricing from "./pages/Pricing";
+import Landing from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 
 // Initialize API base URL from localStorage or default
@@ -50,6 +52,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
+            <Route path="/landing" element={<Landing />} />
             <Route element={<MainLayout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/videos" element={<Videos />} />
@@ -63,6 +66,7 @@ const App = () => {
               <Route path="/data-rights" element={<DataRights />} />
               <Route path="/documentation" element={<Documentation />} />
               <Route path="/help-support" element={<HelpSupport />} />
+              <Route path="/pricing" element={<Pricing />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
