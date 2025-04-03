@@ -15,7 +15,7 @@ import {
   DialogClose
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Cpu, Memory } from "lucide-react";
+import { Cpu, Database } from "lucide-react";
 
 interface ProcessingResourcesDialogProps {
   open: boolean;
@@ -85,7 +85,7 @@ const ProcessingResourcesDialog: React.FC<ProcessingResourcesDialogProps> = ({
           <TabsContent value="memory" className="space-y-4 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Memory className="h-4 w-4 mr-2" />
+                <Database className="h-4 w-4 mr-2" />
                 <Label htmlFor="memory-allocation">Memory Allocation</Label>
               </div>
               <span className="text-sm font-medium">{memoryAllocation}%</span>

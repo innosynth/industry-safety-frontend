@@ -1,505 +1,287 @@
 
-import React, { useState } from 'react';
-import { 
-  Card, 
-  CardContent 
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import React from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChevronDown, FileText, Video, LayoutDashboard, AlertTriangle, Shield, Users, Clock, Settings } from 'lucide-react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { 
+  BookOpen, 
+  FileText, 
+  Code, 
+  Database, 
+  Shield, 
+  Camera, 
+  AlertTriangle, 
+  ChartBar, 
+  UserRound, 
+  Users,
+  Settings
+} from "lucide-react";
 
 const Documentation: React.FC = () => {
-  const [tab, setTab] = useState("guides");
-
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Documentation</h1>
+    <div className="container py-6 space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Documentation</h1>
+        <p className="text-muted-foreground">
+          Comprehensive guides and documentation for using the SafetyVision platform.
+        </p>
       </div>
 
-      <Tabs defaultValue={tab} onValueChange={setTab} className="w-full">
+      <Tabs defaultValue="guides" className="space-y-4">
         <TabsList className="grid grid-cols-3 w-full max-w-md">
           <TabsTrigger value="guides">User Guides</TabsTrigger>
           <TabsTrigger value="api">API Reference</TabsTrigger>
-          <TabsTrigger value="faq">FAQs</TabsTrigger>
+          <TabsTrigger value="faqs">FAQs</TabsTrigger>
         </TabsList>
 
-        <div className="mt-6 grid md:grid-cols-4 gap-6">
-          <Card className="md:col-span-1 h-fit">
-            <CardContent className="p-4">
-              <ScrollArea className="h-[calc(100vh-220px)]">
-                {tab === "guides" && (
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold mb-2">Getting Started</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <FileText className="h-4 w-4 mr-2" />
-                        Introduction to InnoSynth
-                      </li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <FileText className="h-4 w-4 mr-2" />
-                        System Requirements
-                      </li>
-                    </ul>
-                    
-                    <h3 className="text-lg font-semibold my-4">Features</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <LayoutDashboard className="h-4 w-4 mr-2" />
-                        Dashboard Overview
-                      </li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <Video className="h-4 w-4 mr-2" />
-                        Video Monitoring Guide
-                      </li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <AlertTriangle className="h-4 w-4 mr-2" />
-                        Safety Violations Detection
-                      </li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <Shield className="h-4 w-4 mr-2" />
-                        Safety Stats & Reporting
-                      </li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <Users className="h-4 w-4 mr-2" />
-                        Managing Tenants
-                      </li>
-                    </ul>
-                    
-                    <h3 className="text-lg font-semibold my-4">Administration</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <Settings className="h-4 w-4 mr-2" />
-                        System Configuration
-                      </li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer flex items-center">
-                        <User className="h-4 w-4 mr-2" />
-                        User Management
-                      </li>
-                    </ul>
-                  </div>
-                )}
-                
-                {tab === "api" && (
+        <TabsContent value="guides" className="space-y-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Getting Started</CardTitle>
+              <CardDescription>
+                Essential guides to help you start using the platform efficiently.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <DocCard 
+                  icon={<BookOpen className="h-5 w-5" />}
+                  title="Platform Overview"
+                  description="Learn about the core features and capabilities of the SafetyVision platform."
+                />
+                <DocCard 
+                  icon={<Camera className="h-5 w-5" />}
+                  title="Camera Setup"
+                  description="Instructions for configuring and connecting surveillance cameras."
+                />
+                <DocCard 
+                  icon={<AlertTriangle className="h-5 w-5" />}
+                  title="Safety Violation Detection"
+                  description="How to configure and customize safety violation detection rules."
+                />
+                <DocCard 
+                  icon={<ChartBar className="h-5 w-5" />}
+                  title="Safety Analytics"
+                  description="Understand safety statistics and reporting features."
+                />
+                <DocCard 
+                  icon={<Users className="h-5 w-5" />}
+                  title="Tenant Management"
+                  description="How to add, edit, and manage tenant information."
+                />
+                <DocCard 
+                  icon={<Settings className="h-5 w-5" />}
+                  title="System Configuration"
+                  description="Detailed instructions for customizing system settings."
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle>Advanced Topics</CardTitle>
+              <CardDescription>
+                In-depth guides for advanced users and administrators.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <DocCard 
+                  icon={<Shield className="h-5 w-5" />}
+                  title="Security Best Practices"
+                  description="Recommended security configurations and best practices."
+                />
+                <DocCard 
+                  icon={<Database className="h-5 w-5" />}
+                  title="Data Management"
+                  description="Guidelines for managing video data, backups, and storage."
+                />
+                <DocCard 
+                  icon={<UserRound className="h-5 w-5" />}
+                  title="User Management"
+                  description="How to manage user roles, permissions, and access controls."
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="api">
+          <Card>
+            <CardHeader>
+              <CardTitle>API Documentation</CardTitle>
+              <CardDescription>
+                Complete reference for the SafetyVision API endpoints and integration options.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-8">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold mb-2">API Overview</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Authentication</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Rate Limits</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Error Handling</li>
-                    </ul>
-                    
-                    <h3 className="text-lg font-semibold my-4">Endpoints</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Cameras</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Detections</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Violations</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Statistics</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Users</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Tenants</li>
-                    </ul>
-                    
-                    <h3 className="text-lg font-semibold my-4">SDKs & Libraries</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">JavaScript SDK</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Python SDK</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Java SDK</li>
-                    </ul>
-                  </div>
-                )}
-                
-                {tab === "faq" && (
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold mb-2">Frequently Asked Questions</h3>
-                    <ul className="space-y-2">
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">General Questions</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Account & Billing</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Technical Support</li>
-                      <li className="text-sm text-blue-500 hover:underline cursor-pointer">Integration & APIs</li>
-                    </ul>
-                  </div>
-                )}
-              </ScrollArea>
-            </CardContent>
-          </Card>
-          
-          <Card className="md:col-span-3">
-            <CardContent className="p-6">
-              <ScrollArea className="h-[calc(100vh-220px)]">
-                {tab === "guides" && (
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-2xl font-bold mb-4">Introduction to InnoSynth</h2>
-                      <p className="mb-4">
-                        InnoSynth is a comprehensive safety monitoring platform designed to enhance workplace safety through AI-powered video analysis. 
-                        This guide will help you understand the core features and how to get the most out of the platform.
-                      </p>
-                      
-                      <h3 className="text-xl font-semibold mt-6 mb-3">Key Features</h3>
-                      <ul className="list-disc pl-6 space-y-2">
-                        <li>Real-time safety monitoring through connected cameras</li>
-                        <li>AI-powered detection of PPE compliance and safety violations</li>
-                        <li>Comprehensive analytics and reporting</li>
-                        <li>Multi-tenant architecture for managing different sites or clients</li>
-                        <li>Customizable alerts and notifications</li>
-                      </ul>
-                      
-                      <h3 className="text-xl font-semibold mt-6 mb-3">System Architecture</h3>
-                      <img 
-                        src="https://via.placeholder.com/800x400?text=InnoSynth+System+Architecture" 
-                        alt="InnoSynth System Architecture" 
-                        className="rounded-lg my-4 border"
-                      />
-                      <p className="text-sm text-muted-foreground">
-                        Diagram showing the high-level architecture of the InnoSynth Safety Vision platform
-                      </p>
-                      
-                      <h3 className="text-xl font-semibold mt-6 mb-3">Getting Started</h3>
-                      <Accordion type="single" collapsible>
-                        <AccordionItem value="step1">
-                          <AccordionTrigger>
-                            <div className="flex items-center">
-                              <div className="bg-blue-100 rounded-full p-1 mr-2 text-blue-700">1</div>
-                              <span>Setting Up Your Account</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="pl-9">
-                              <p className="mb-2">To set up your account, follow these steps:</p>
-                              <ol className="list-decimal pl-5 space-y-1">
-                                <li>Contact your system administrator to create your user profile</li>
-                                <li>Check your email for the account activation link</li>
-                                <li>Set your password and complete your profile information</li>
-                                <li>Configure your preferences and notification settings</li>
-                              </ol>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="step2">
-                          <AccordionTrigger>
-                            <div className="flex items-center">
-                              <div className="bg-blue-100 rounded-full p-1 mr-2 text-blue-700">2</div>
-                              <span>Connecting Your First Camera</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="pl-9">
-                              <p className="mb-2">To connect a camera to the system:</p>
-                              <ol className="list-decimal pl-5 space-y-1">
-                                <li>Navigate to the Video Monitoring section</li>
-                                <li>Click "Add Camera" and enter the camera's RTSP URL or other stream information</li>
-                                <li>Configure the camera zones and detection parameters</li>
-                                <li>Test the connection to ensure the feed is working properly</li>
-                              </ol>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="step3">
-                          <AccordionTrigger>
-                            <div className="flex items-center">
-                              <div className="bg-blue-100 rounded-full p-1 mr-2 text-blue-700">3</div>
-                              <span>Setting Up Safety Rules</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="pl-9">
-                              <p className="mb-2">Configure safety rules for your workplace:</p>
-                              <ol className="list-decimal pl-5 space-y-1">
-                                <li>Navigate to the Settings section</li>
-                                <li>Define required PPE for different zones (hard hats, safety vests, etc.)</li>
-                                <li>Configure violation thresholds and notification settings</li>
-                                <li>Set working hours and monitoring schedules</li>
-                              </ol>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+                    <div className="flex items-center space-x-2">
+                      <Code className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Authentication</h3>
                     </div>
+                    <div className="rounded-md bg-muted p-4">
+                      <pre className="text-sm"><code>{`// API Authentication Example
+POST /api/auth/token
+{
+  "apiKey": "your-api-key",
+  "secret": "your-api-secret"
+}
+
+// Response
+{
+  "token": "jwt-token",
+  "expiresIn": 3600
+}`}</code></pre>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      All API requests must include a valid JWT token in the Authorization header.
+                    </p>
                   </div>
-                )}
-                
-                {tab === "api" && (
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-2xl font-bold mb-4">API Reference</h2>
-                      <p className="mb-4">
-                        The InnoSynth API allows you to programmatically access and control your safety monitoring system. 
-                        This documentation provides details on how to authenticate, make requests, and handle responses.
-                      </p>
-                      
-                      <h3 className="text-xl font-semibold mt-6 mb-3">Authentication</h3>
-                      <p className="mb-2">
-                        All API requests require authentication using API keys. You can generate and manage API keys in the Settings section.
-                      </p>
-                      <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
-                        <p className="text-muted-foreground">Example Request:</p>
-                        <pre className="overflow-x-auto">
-{`curl -X GET \\
-  https://api.innosynth.example.com/v1/cameras \\
-  -H 'Authorization: Bearer YOUR_API_KEY'`}
-                        </pre>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <Camera className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Camera Endpoints</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/cameras</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
                       </div>
-                      
-                      <h3 className="text-xl font-semibold mt-6 mb-3">Cameras Endpoint</h3>
-                      <p className="mb-2">
-                        The cameras endpoint allows you to list, create, update, and delete camera configurations.
+                      <p className="text-sm text-muted-foreground">
+                        Retrieve a list of all configured cameras.
                       </p>
-                      
-                      <Accordion type="single" collapsible>
-                        <AccordionItem value="get-cameras">
-                          <AccordionTrigger>
-                            <div className="flex items-center font-mono">
-                              <div className="bg-green-100 text-green-700 text-xs py-1 px-2 rounded mr-2">GET</div>
-                              <span>/cameras</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="space-y-4">
-                              <p>Returns a list of all cameras for the authenticated user.</p>
-                              
-                              <div className="space-y-2">
-                                <h4 className="font-semibold">Request Parameters</h4>
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                  <thead>
-                                    <tr>
-                                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Parameter</th>
-                                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Type</th>
-                                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                    <tr>
-                                      <td className="px-3 py-2 text-sm">tenant_id</td>
-                                      <td className="px-3 py-2 text-sm">string</td>
-                                      <td className="px-3 py-2 text-sm">Filter cameras by tenant ID (optional)</td>
-                                    </tr>
-                                    <tr>
-                                      <td className="px-3 py-2 text-sm">status</td>
-                                      <td className="px-3 py-2 text-sm">string</td>
-                                      <td className="px-3 py-2 text-sm">Filter by status: active, inactive, error (optional)</td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                              
-                              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
-                                <p className="text-muted-foreground">Example Response:</p>
-                                <pre className="overflow-x-auto">
-{`{
-  "data": [
-    {
-      "id": "cam_12345",
-      "name": "Loading Dock Camera",
-      "url": "rtsp://example.com/stream1",
-      "tenant_id": "tenant_789",
-      "status": "active",
-      "created_at": "2023-05-15T10:30:00Z"
-    },
-    {
-      "id": "cam_67890",
-      "name": "Assembly Line Camera",
-      "url": "rtsp://example.com/stream2",
-      "tenant_id": "tenant_789",
-      "status": "active",
-      "created_at": "2023-05-16T14:20:00Z"
-    }
-  ],
-  "total": 2,
-  "page": 1,
-  "per_page": 10
-}`}
-                                </pre>
-                              </div>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="post-cameras">
-                          <AccordionTrigger>
-                            <div className="flex items-center font-mono">
-                              <div className="bg-blue-100 text-blue-700 text-xs py-1 px-2 rounded mr-2">POST</div>
-                              <span>/cameras</span>
-                            </div>
-                          </AccordionTrigger>
-                          <AccordionContent>
-                            <div className="space-y-4">
-                              <p>Creates a new camera configuration.</p>
-                              
-                              <div className="space-y-2">
-                                <h4 className="font-semibold">Request Body</h4>
-                                <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
-                                  <pre className="overflow-x-auto">
-{`{
-  "name": "Warehouse Camera",
-  "url": "rtsp://example.com/stream3",
-  "tenant_id": "tenant_789",
-  "description": "Camera monitoring south warehouse entrance",
-  "detection_zones": [
-    {
-      "name": "Entry Zone",
-      "coordinates": [[0,0], [0,100], [100,100], [100,0]],
-      "required_ppe": ["helmet", "vest"]
-    }
-  ]
-}`}
-                                  </pre>
-                                </div>
-                              </div>
-                              
-                              <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg font-mono text-sm">
-                                <p className="text-muted-foreground">Example Response:</p>
-                                <pre className="overflow-x-auto">
-{`{
-  "id": "cam_54321",
-  "name": "Warehouse Camera",
-  "url": "rtsp://example.com/stream3",
-  "tenant_id": "tenant_789",
-  "status": "active",
-  "created_at": "2023-05-20T09:45:00Z",
-  "description": "Camera monitoring south warehouse entrance",
-  "detection_zones": [
-    {
-      "id": "zone_123",
-      "name": "Entry Zone",
-      "coordinates": [[0,0], [0,100], [100,100], [100,0]],
-      "required_ppe": ["helmet", "vest"]
-    }
-  ]
-}`}
-                                </pre>
-                              </div>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/cameras/{"{id}"}</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Get details for a specific camera.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">POST /api/cameras</code>
+                        <span className="text-xs bg-green-500/10 text-green-500 px-2 py-1 rounded">POST</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Register a new camera.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">PUT /api/cameras/{"{id}"}</code>
+                        <span className="text-xs bg-yellow-500/10 text-yellow-500 px-2 py-1 rounded">PUT</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Update camera configuration.
+                      </p>
                     </div>
                   </div>
-                )}
-                
-                {tab === "faq" && (
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
-                      
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="q1">
-                          <AccordionTrigger>What types of cameras are supported by InnoSynth?</AccordionTrigger>
-                          <AccordionContent>
-                            <p className="mb-2">
-                              InnoSynth supports a wide range of camera types and protocols, including:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-1">
-                              <li>IP cameras that support RTSP streams</li>
-                              <li>ONVIF-compliant cameras</li>
-                              <li>USB webcams (with appropriate streaming setup)</li>
-                              <li>YouTube live streams</li>
-                              <li>HLS and DASH streaming formats</li>
-                            </ul>
-                            <p className="mt-2">
-                              For best performance, we recommend using IP cameras with at least 720p resolution.
-                            </p>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="q2">
-                          <AccordionTrigger>How accurate is the PPE detection?</AccordionTrigger>
-                          <AccordionContent>
-                            <p>
-                              Our AI detection models are trained on large datasets of safety equipment in various lighting conditions and environments. The current detection accuracy is approximately 95% for standard PPE items such as hard hats, safety vests, and glasses in good lighting conditions. 
-                            </p>
-                            <p className="mt-2">
-                              Factors that can affect accuracy include:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-1 mt-1">
-                              <li>Poor lighting conditions</li>
-                              <li>Obstructed views</li>
-                              <li>Distance from camera</li>
-                              <li>Camera resolution and quality</li>
-                            </ul>
-                            <p className="mt-2">
-                              You can improve accuracy by properly positioning cameras and ensuring adequate lighting in monitored areas.
-                            </p>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="q3">
-                          <AccordionTrigger>Can InnoSynth integrate with our existing security systems?</AccordionTrigger>
-                          <AccordionContent>
-                            <p>
-                              Yes, InnoSynth is designed to integrate with many existing systems through our API. Common integration points include:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-1 mt-2">
-                              <li>VMS (Video Management Systems)</li>
-                              <li>Access control systems</li>
-                              <li>Notification and alerting platforms</li>
-                              <li>Data warehousing and BI tools</li>
-                              <li>ERP and workforce management systems</li>
-                            </ul>
-                            <p className="mt-2">
-                              Our professional services team can assist with custom integrations for enterprise clients. Please contact support for more information.
-                            </p>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="q4">
-                          <AccordionTrigger>What happens if the internet connection is lost?</AccordionTrigger>
-                          <AccordionContent>
-                            <p>
-                              InnoSynth has several resilience features to handle connectivity issues:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-1 mt-2">
-                              <li>Edge processing capabilities for critical safety monitoring</li>
-                              <li>Local caching of detection events when connection is lost</li>
-                              <li>Automatic synchronization when connection is restored</li>
-                              <li>Alerts for extended connectivity issues</li>
-                            </ul>
-                            <p className="mt-2">
-                              For optimal performance, we recommend a reliable internet connection with at least 5 Mbps upload speed per camera stream.
-                            </p>
-                          </AccordionContent>
-                        </AccordionItem>
-                        
-                        <AccordionItem value="q5">
-                          <AccordionTrigger>How is data stored and secured?</AccordionTrigger>
-                          <AccordionContent>
-                            <p>
-                              InnoSynth takes data security seriously. Our approach includes:
-                            </p>
-                            <ul className="list-disc pl-5 space-y-1 mt-2">
-                              <li>End-to-end encryption for all data in transit</li>
-                              <li>AES-256 encryption for data at rest</li>
-                              <li>Regular security audits and penetration testing</li>
-                              <li>Role-based access control for all users</li>
-                              <li>Compliance with GDPR, CCPA, and other regional data protection regulations</li>
-                              <li>Automated data retention policies based on your requirements</li>
-                            </ul>
-                            <p className="mt-2">
-                              Video footage is processed in real-time but can be optionally stored according to your retention policies. Detection events and statistics are stored in our secure database.
-                            </p>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-2">
+                      <AlertTriangle className="h-5 w-5 text-primary" />
+                      <h3 className="text-lg font-semibold">Violation Endpoints</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/violations</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Retrieve a list of detected safety violations.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sm font-mono">GET /api/violations/stats</code>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">GET</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Get statistical data about safety violations.
+                      </p>
                     </div>
                   </div>
-                )}
+                </div>
               </ScrollArea>
             </CardContent>
           </Card>
-        </div>
+        </TabsContent>
+
+        <TabsContent value="faqs">
+          <Card>
+            <CardHeader>
+              <CardTitle>Frequently Asked Questions</CardTitle>
+              <CardDescription>
+                Common questions and answers about the SafetyVision platform.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">What hardware is required for SafetyVision?</h3>
+                  <p className="text-muted-foreground">
+                    SafetyVision works with standard IP cameras and requires a dedicated server for processing. Recommended specifications depend on the number of cameras and detection needs.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">How accurate is the safety violation detection?</h3>
+                  <p className="text-muted-foreground">
+                    SafetyVision typically achieves 90-95% accuracy in standard environments. Detection accuracy can be improved through proper camera placement and customizing detection sensitivity.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Is cloud storage supported?</h3>
+                  <p className="text-muted-foreground">
+                    Yes, SafetyVision supports both local and cloud storage options. Cloud storage integration is available with AWS S3, Google Cloud Storage, and Azure Blob Storage.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">How is data privacy maintained?</h3>
+                  <p className="text-muted-foreground">
+                    SafetyVision implements data encryption, access controls, and retention policies to maintain privacy. The system is designed to be compliant with GDPR and other privacy regulations.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Can SafetyVision integrate with other systems?</h3>
+                  <p className="text-muted-foreground">
+                    Yes, SafetyVision offers API integration with various building management systems, security platforms, and notification systems.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
+    </div>
+  );
+};
+
+interface DocCardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+const DocCard: React.FC<DocCardProps> = ({ icon, title, description }) => {
+  return (
+    <div className="flex flex-col space-y-2 p-4 border rounded-lg bg-card hover:bg-accent/50 transition-colors hover:border-accent cursor-pointer">
+      <div className="flex items-center space-x-2">
+        <div className="text-primary">{icon}</div>
+        <h3 className="font-medium">{title}</h3>
+      </div>
+      <p className="text-sm text-muted-foreground">{description}</p>
+      <div className="flex items-center text-sm text-primary mt-auto pt-2">
+        <span>Read more</span>
+        <FileText className="h-4 w-4 ml-1" />
+      </div>
     </div>
   );
 };

@@ -1,162 +1,283 @@
 
-import React from 'react';
+import React from "react";
 import { 
   Card, 
   CardContent, 
+  CardDescription, 
+  CardFooter, 
   CardHeader, 
-  CardTitle,
-  CardDescription
+  CardTitle 
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Link } from 'react-router-dom';
-import { ChevronLeft, Download, UploadCloud, Trash2 } from 'lucide-react';
+import { 
+  Form, 
+  FormControl, 
+  FormDescription, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { toast } from "sonner";
+import { ArrowRight, CheckCheck } from "lucide-react";
+
+const formSchema = z.object({
+  fullName: z.string().min(2, {
+    message: "Full name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  requestTypes: z.array(z.string()).refine((value) => value.length > 0, {
+    message: "You must select at least one type of request.",
+  }),
+  additionalInfo: z.string().optional(),
+  agreeTerms: z.boolean().refine((val) => val === true, {
+    message: "You must agree to the terms and conditions.",
+  }),
+});
 
 const DataRights: React.FC = () => {
-  const handleDataRequest = (action: string) => {
-    toast.success(`Your ${action} request has been submitted. We'll process it shortly.`);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      requestTypes: [],
+      additionalInfo: "",
+      agreeTerms: false,
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    toast.success("Data rights request submitted successfully");
+    form.reset();
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-2">
-        <Link to="/profile" className="flex items-center text-sm text-blue-500 hover:underline">
-          <ChevronLeft className="h-4 w-4" />
-          Back to Profile
-        </Link>
+    <div className="container max-w-4xl py-6 space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Data Rights</h1>
+        <p className="text-muted-foreground">
+          Request access, modification, or deletion of your personal data in accordance with privacy regulations.
+        </p>
       </div>
-      
+
       <Card>
         <CardHeader>
           <CardTitle>Your Data Rights</CardTitle>
           <CardDescription>
-            Understand and manage how your data is used within InnoSynth
+            Under various privacy regulations including GDPR, CCPA, and others, you have certain rights regarding your personal data.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="prose max-w-none mb-6">
-            <h2>Your Rights Under Data Protection Laws</h2>
-            <p>
-              Depending on your location, you may have various rights under data protection laws such as GDPR, CCPA, and others. 
-              InnoSynth is committed to respecting these rights and providing you with control over your personal data.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center">
-                  <Download className="h-5 w-5 mr-2 text-blue-500" />
-                  Data Access
-                </CardTitle>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="border bg-muted/40">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Right to Access</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Download a copy of all your personal data that we have collected.
+                <p className="text-sm text-muted-foreground">
+                  You have the right to request a copy of all personal data we hold about you.
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => handleDataRequest('data access')}
-                >
-                  Request Data
-                </Button>
               </CardContent>
             </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center">
-                  <UploadCloud className="h-5 w-5 mr-2 text-green-500" />
-                  Data Portability
-                </CardTitle>
+            <Card className="border bg-muted/40">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Right to Rectification</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Request your data in a machine-readable format to transfer elsewhere.
+                <p className="text-sm text-muted-foreground">
+                  You can request that we correct any inaccurate or incomplete information about you.
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={() => handleDataRequest('data portability')}
-                >
-                  Export Data
-                </Button>
               </CardContent>
             </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base flex items-center">
-                  <Trash2 className="h-5 w-5 mr-2 text-red-500" />
-                  Data Deletion
-                </CardTitle>
+            <Card className="border bg-muted/40">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Right to Erasure</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Request deletion of your personal data from our systems.
+                <p className="text-sm text-muted-foreground">
+                  Also known as the 'right to be forgotten', you can request that we delete your personal data.
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="w-full text-red-500 hover:text-red-500"
-                  onClick={() => handleDataRequest('data deletion')}
-                >
-                  Delete My Data
-                </Button>
+              </CardContent>
+            </Card>
+            <Card className="border bg-muted/40">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Right to Object</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  You have the right to object to the processing of your personal data for certain purposes.
+                </p>
               </CardContent>
             </Card>
           </div>
-          
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-2">Additional Rights</h3>
-            <ul className="space-y-2">
-              <li className="flex items-start">
-                <div className="bg-blue-100 rounded-full p-1 mr-2 mt-0.5">
-                  <Check className="h-3 w-3 text-blue-600" />
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Enter your email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div>
+                <FormLabel className="text-base">Request Type</FormLabel>
+                <FormDescription>
+                  Select the type of data rights request you want to submit.
+                </FormDescription>
+                <div className="grid gap-4 pt-2">
+                  <FormField
+                    control={form.control}
+                    name="requestTypes"
+                    render={() => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox 
+                            value="access"
+                            checked={form.watch("requestTypes").includes("access")}
+                            onCheckedChange={(checked) => {
+                              const current = form.getValues("requestTypes");
+                              if (checked) {
+                                form.setValue("requestTypes", [...current, "access"]);
+                              } else {
+                                form.setValue("requestTypes", current.filter(item => item !== "access"));
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-medium">
+                            Data Access Request
+                          </FormLabel>
+                          <FormDescription>
+                            Receive a copy of your personal data
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="requestTypes"
+                    render={() => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox 
+                            value="rectify"
+                            checked={form.watch("requestTypes").includes("rectify")}
+                            onCheckedChange={(checked) => {
+                              const current = form.getValues("requestTypes");
+                              if (checked) {
+                                form.setValue("requestTypes", [...current, "rectify"]);
+                              } else {
+                                form.setValue("requestTypes", current.filter(item => item !== "rectify"));
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-medium">
+                            Data Rectification Request
+                          </FormLabel>
+                          <FormDescription>
+                            Correct or update your personal data
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="requestTypes"
+                    render={() => (
+                      <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                        <FormControl>
+                          <Checkbox 
+                            value="delete"
+                            checked={form.watch("requestTypes").includes("delete")}
+                            onCheckedChange={(checked) => {
+                              const current = form.getValues("requestTypes");
+                              if (checked) {
+                                form.setValue("requestTypes", [...current, "delete"]);
+                              } else {
+                                form.setValue("requestTypes", current.filter(item => item !== "delete"));
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                          <FormLabel className="text-sm font-medium">
+                            Data Deletion Request
+                          </FormLabel>
+                          <FormDescription>
+                            Request deletion of your personal data
+                          </FormDescription>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
                 </div>
-                <div>
-                  <span className="font-medium">Right to Rectification:</span>
-                  <p className="text-sm text-muted-foreground">
-                    You can correct inaccurate personal data by updating your profile information.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <div className="bg-blue-100 rounded-full p-1 mr-2 mt-0.5">
-                  <Check className="h-3 w-3 text-blue-600" />
-                </div>
-                <div>
-                  <span className="font-medium">Right to Restriction of Processing:</span>
-                  <p className="text-sm text-muted-foreground">
-                    You can request we limit how we use your data in certain circumstances.
-                  </p>
-                </div>
-              </li>
-              <li className="flex items-start">
-                <div className="bg-blue-100 rounded-full p-1 mr-2 mt-0.5">
-                  <Check className="h-3 w-3 text-blue-600" />
-                </div>
-                <div>
-                  <span className="font-medium">Right to Object:</span>
-                  <p className="text-sm text-muted-foreground">
-                    You can object to our processing of your personal data in certain cases.
-                  </p>
-                </div>
-              </li>
-            </ul>
-          </div>
-          
-          <div className="mt-6 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-2">Contact Our Data Protection Team</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              If you have any questions about your data rights or wish to submit a request not covered above,
-              please contact our data protection team.
-            </p>
-            <Button variant="default">
-              Contact Data Team
-            </Button>
-          </div>
+                <FormMessage />
+              </div>
+              <FormField
+                control={form.control}
+                name="agreeTerms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 pt-4">
+                    <FormControl>
+                      <Checkbox 
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>
+                        I confirm that the information provided is accurate and I am the data subject
+                      </FormLabel>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full">
+                Submit Request <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </form>
+          </Form>
         </CardContent>
+        <CardFooter className="border-t px-6 py-4 bg-muted/30">
+          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+            <CheckCheck className="h-4 w-4" />
+            <span>We typically process data rights requests within 30 days</span>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   );
