@@ -13,7 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // Navigation items without Settings for mobile footer
 const navigation = [
-  { name: "Dashboard", href: "/", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Video Monitoring", href: "/videos", icon: Camera },
   { name: "Safety Violations", href: "/violations", icon: AlertTriangle },
   { name: "Safety Stats", href: "/stats", icon: Shield },

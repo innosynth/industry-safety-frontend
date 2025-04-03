@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 
 const Dashboard: React.FC = () => {
   const [stats, setStats] = React.useState(mockData.stats);
-  const [liveCameraUrl, setLiveCameraUrl] = useState<string | null>("https://www.youtube.com/embed/s1C8wYy3xDU");
+  const [liveCameraUrl, setLiveCameraUrl] = useState<string | null>("#");
   const [liveCameraInfo, setLiveCameraInfo] = useState<{
     tenantId: string;
     cameraId: string;
@@ -44,14 +44,14 @@ const Dashboard: React.FC = () => {
       });
     } else {
       // Set default test URL if none is in localStorage
-      setLiveCameraUrl("https://www.youtube.com/embed/s1C8wYy3xDU");
+      setLiveCameraUrl("#");
       setLiveCameraInfo({
         tenantId: "demo",
         cameraId: "demo-cam-01"
       });
       
       // Save default values to localStorage
-      localStorage.setItem('liveCameraUrl', "https://www.youtube.com/embed/s1C8wYy3xDU");
+      localStorage.setItem('liveCameraUrl', "#");
       localStorage.setItem('liveCameraTenant', "demo");
       localStorage.setItem('liveCameraId', "demo-cam-01");
     }
